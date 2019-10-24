@@ -26,7 +26,7 @@ public class MybatisConfig {
     private DataSource dataSource;
 
     @Value("${mybatis.resources}")
-    private String resourceesPath;
+    private String resourcesPath;
 
     //TODO 事务支持
 
@@ -37,7 +37,7 @@ public class MybatisConfig {
                 new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         //设置映射文件
-        factoryBean.setMapperLocations(resourcePatternResolver.getResources(resourceesPath));
+        factoryBean.setMapperLocations(resourcePatternResolver.getResources(resourcesPath));
         //别名，让*Mpper.xml实体类映射可以不加上具体包名
         factoryBean.setTypeAliasesPackage("com.freeLearn.wall");
         return factoryBean.getObject();

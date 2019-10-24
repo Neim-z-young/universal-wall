@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'war'
+    id "org.hidetake.ssh" version "2.10.1"  //ssh
 }
 
 group 'com.freeLearn'
@@ -8,6 +9,14 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
+
+remotes {
+    webServer {
+        host = '123.207.230.153'
+        user = 'ubuntu'
+        identity = file('C:\\Users\\13408\\.ssh\\oyoungy')
+    }
+}
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -24,6 +33,8 @@ repositories {
 dependencies {
     compile "org.springframework:spring-webmvc:$springVersion"
     compile "org.springframework:spring-jdbc:$springVersion"
+    compile "org.springframework.security:spring-security-config:$springSecurityVersion"
+    compile "org.springframework.security:spring-security-web:$springSecurityVersion"
     compile "com.h2database:h2:$h2Version"
     compile "org.hibernate:hibernate-validator:$hibernateValidatorVersion"
     compile "org.apache.commons:commons-lang3:$commonsLangVersion"
@@ -68,3 +79,51 @@ wrapper{
     gradleVersion = '5.4'
 }
 
+task deploy {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                println 'Copy war package...'+buildDir.toString() + '/libs/spittr.war'
+                put from: buildDir.toString() + '/libs/spittr.war', into: '/usr/local/apache-tomcat9/webapps'
+                //execute 'sudo service tomcat restart'
+                println 'Copied'
+            }
+        }
+    }
+}
+
+task chmod {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                println 'chmod to 755...'
+                execute 'sudo chmod -R 755 /usr/local/apache-tomcat9/webapps/spittr'
+                println 'changed successed'
+            }
+        }
+    }
+}
+
+task startTomcat {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                println 'starting...'
+                execute 'sudo sh /usr/local/apache-tomcat9/bin/startup.sh'
+                println 'started'
+            }
+        }
+    }
+}
+
+task shutdownTomcat {
+    doLast {
+        ssh.run {
+            session(remotes.webServer) {
+                println 'stopping...'
+                execute 'sudo sh /usr/local/apache-tomcat9/bin/shutdown.sh'
+                println 'stopped'
+            }
+        }
+    }
+}
