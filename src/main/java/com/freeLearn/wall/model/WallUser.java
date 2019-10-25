@@ -16,6 +16,8 @@ public class WallUser {
 
     private String openId;
 
+    private String nickName;
+
     private Integer lastLogin;
 
     private Integer signupTime;

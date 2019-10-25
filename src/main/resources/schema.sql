@@ -2,10 +2,11 @@
 DROP TABLE if EXISTS `wall_users`;
 CREATE TABLE `wall_users`(
 	`id` int not NULL auto_increment,
-	`username` VARCHAR(150),
+	`username` VARCHAR(50) COMMENT"用户唯一名称",
 	`password` VARCHAR(128) COMMENT"加密后的密码",
 	`email` VARCHAR(256),
 	`open_id` VARCHAR(30) COMMENT"微信openid",
+	`nick_name` VARCHAR(50) COMMENT"昵称, 可与他人重复",
 	`last_login` int,
 	`signup_time` int,
 	`status` TINYINT(1) COMMENT"帐号启用状态：0->禁用；1->启用",
@@ -47,7 +48,8 @@ CREATE TABLE `wall_admin`(
 	`signup_time` int,
 	`status` TINYINT(1) COMMENT"帐号启用状态：0->禁用；1->启用",
 	`is_online` TINYINT(1) COMMENT"是否在线",
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	UNIQUE(`username`)
 )auto_increment=10000;
 
 DROP TABLE if EXISTS `wall_user_login_log`;

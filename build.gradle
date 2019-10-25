@@ -63,6 +63,12 @@ dependencies {
     
     //mysql driver
     compile "mysql:mysql-connector-java:$mysqlConnectorJavaVersion"
+    
+    //JWT
+    compile "io.jsonwebtoken:jjwt:$jjwtVersion"
+
+    //hutool
+    compile "cn.hutool:hutool-all:$hutoolAllVersion"
 
     compile "javax.servlet:jstl:$jstlVersion"
     providedCompile "javax.servlet:javax.servlet-api:$servletApiVersion"

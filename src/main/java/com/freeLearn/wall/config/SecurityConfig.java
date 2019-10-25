@@ -1,8 +1,16 @@
 package com.freeLearn.wall.config;
 
+import com.freeLearn.wall.component.JwtAuthenticationTokenFilter;
+import com.freeLearn.wall.component.RestfulAccessDeniedHandler;
+import com.freeLearn.wall.component.RestfulAuthenticationEntryPoint;
 import com.freeLearn.wall.domain.WallAdminDetails;
+import com.freeLearn.wall.domain.WallUserDetails;
 import com.freeLearn.wall.model.Permission;
 import com.freeLearn.wall.model.WallAdmin;
+import com.freeLearn.wall.model.WallUser;
+import com.freeLearn.wall.service.WallUserService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,17 +19,26 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
 
 @Configuration
 @EnableWebMvcSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private WallUserService wallUserService;
+
+    @Autowired
+    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+
+    @Autowired
+    private RestfulAuthenticationEntryPoint restfulAuthenticationEntryPoint;
 
 
     //配置Spring Security 的Filter链
@@ -43,8 +60,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 禁用缓存（不使用session，故基本用不上缓存）
         http.headers().cacheControl();
-
-        //TODO 提供jwtToken 支持
+        //提供jwt Filter支持，在认证过滤器前，先进行jwt过滤器认证
+        http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        //添加自定义未授权和未登录的返回结果
+        http.exceptionHandling()
+                .accessDeniedHandler(restfulAccessDeniedHandler)
+                .authenticationEntryPoint(restfulAuthenticationEntryPoint);
     }
 
     //配置userDetailsService
@@ -59,15 +80,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    //TODO 将前后端的userDetailsService分离，前端不同，提供的用户服务也有所差别
+    //前端用户，唯一username
+    //TODO 完善微信端用户服务，
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> {
-            WallAdmin wallAdmin=null;   //认证管理员
-            if(wallAdmin!=null){
-                List<Permission> permissionList = null;
-                return new WallAdminDetails(wallAdmin, permissionList);
+            WallUser wallUser = wallUserService.getByUsername(username);
+            if(wallUser!=null){
+                return new WallUserDetails(wallUser);
             }
           throw new UsernameNotFoundException("用户名或密码错误");
         };
+    }
+
+    //jwt Filter
+    @Bean
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
+        return new JwtAuthenticationTokenFilter();
     }
 }

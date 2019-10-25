@@ -18,7 +18,7 @@ public enum ResultCode implements IErrorCode {
     }
 
     @Override
-    public long getCode() {
+    public int getCode() {
         return code;
     }
 

@@ -1,7 +1,7 @@
 package com.freeLearn.wall.common;
 
 public interface IErrorCode {
-    long getCode();
+    int getCode();
 
     String getMessage();
 }

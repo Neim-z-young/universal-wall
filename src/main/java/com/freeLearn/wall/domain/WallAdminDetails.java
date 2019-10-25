@@ -50,6 +50,6 @@ public class WallAdminDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return admin.getStatus();
     }
 }
