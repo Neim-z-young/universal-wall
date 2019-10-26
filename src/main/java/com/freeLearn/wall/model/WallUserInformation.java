@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class WallUserDetail {
+public class WallUserInformation {
     private Integer id;
 
     private Integer userId;

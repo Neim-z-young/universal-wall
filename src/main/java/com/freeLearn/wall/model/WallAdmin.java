@@ -14,7 +14,7 @@ public class WallAdmin {
 
     private String email;
 
-    private String nick_name;
+    private String nickName;
 
     private String note;
 

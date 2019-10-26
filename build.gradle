@@ -39,6 +39,7 @@ dependencies {
     compile "org.hibernate:hibernate-validator:$hibernateValidatorVersion"
     compile "org.apache.commons:commons-lang3:$commonsLangVersion"
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    compile "com.github.pagehelper:pagehelper:$pagehelperVersion"
 
     //javaee api
     compile "javax.xml.bind:jaxb-api:$jaxbVersion"

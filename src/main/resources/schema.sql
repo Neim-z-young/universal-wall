@@ -19,8 +19,8 @@ CREATE TABLE `wall_users`(
 	UNIQUE(`username`)
 )auto_increment=10000;
 
-DROP TABLE if EXISTS `wall_user_details`;
-CREATE TABLE `wall_user_details`(
+DROP TABLE if EXISTS `wall_user_Information`;
+CREATE TABLE `wall_user_Information`(
 	`id` int not null auto_increment,
 	`user_id` int,
 	`role_id` int,
@@ -39,10 +39,10 @@ CREATE TABLE `wall_user_details`(
 DROP TABLE if EXISTS `wall_admin`;
 CREATE TABLE `wall_admin`(
 	`id` int not NULL auto_increment,
-	`username` VARCHAR(150),
+	`username` VARCHAR(50),
 	`password` VARCHAR(128) COMMENT"加密后的密码",
 	`email` VARCHAR(256),
-	`nick_name` VARCHAR(30),
+	`nick_name` VARCHAR(50),
 	`note` VARCHAR(200) COMMENT"备注信息",
 	`last_login` int,
 	`signup_time` int,

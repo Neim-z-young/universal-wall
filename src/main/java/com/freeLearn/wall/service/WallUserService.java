@@ -4,6 +4,10 @@ import com.freeLearn.wall.common.CommonResult;
 import com.freeLearn.wall.model.WallUser;
 import org.springframework.stereotype.Service;
 
+/**
+ * 用户服务
+ * Create by oyoungy on 2019/10/25
+ */
 @Service
 public interface WallUserService {
     /**
@@ -55,7 +59,7 @@ public interface WallUserService {
      * 修改昵称
      * @param newNickName
      */
-    void updateNickName(String newNickName);
+    void updateNickName(Integer userId, String newNickName);
 
     /**
      * 更新成长值
