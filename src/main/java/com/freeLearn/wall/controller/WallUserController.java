@@ -11,23 +11,23 @@ public class WallUserController {
 
     //TODO
 
-    @RequestMapping(value = "/weChat/register", method = RequestMethod.POST)
-    public CommonResult<T> weChatRegister(){
-
-    }
-
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public CommonResult<T> register(){
-
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public CommonResult<T> login(){
-
-    }
-
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public CommonResult<T> logout(){
-
-    }
+//    @RequestMapping(value = "/weChat/register", method = RequestMethod.POST)
+//    public CommonResult<T> weChatRegister(){
+//
+//    }
+//
+//    @RequestMapping(value = "/register", method = RequestMethod.POST)
+//    public CommonResult<T> register(){
+//
+//    }
+//
+//    @RequestMapping(value = "/login", method = RequestMethod.POST)
+//    public CommonResult<T> login(){
+//
+//    }
+//
+//    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+//    public CommonResult<T> logout(){
+//
+//    }
 }

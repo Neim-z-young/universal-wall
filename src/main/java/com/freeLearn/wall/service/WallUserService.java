@@ -44,10 +44,9 @@ public interface WallUserService {
      * @param username
      * @param oldPassword
      * @param newPassword
-     * @param confirmPassword
      * @return
      */
-    CommonResult updatePassword(String username, String oldPassword, String newPassword, String confirmPassword);
+    CommonResult updatePassword(String username, String oldPassword, String newPassword);
 
     /**
      * 获取当前登录用户
@@ -58,8 +57,9 @@ public interface WallUserService {
     /**
      * 修改昵称
      * @param newNickName
+     * @return
      */
-    void updateNickName(Integer userId, String newNickName);
+    CommonResult updateNickName(Integer userId, String newNickName);
 
     /**
      * 更新成长值
@@ -74,4 +74,12 @@ public interface WallUserService {
      * @param newPoints
      */
     void updatePoints(Integer userId, Integer newPoints);
+
+    /**
+     * 通过用户名及密码登录，返回token
+     * @param username
+     * @param password
+     * @return
+     */
+    String login(String username, String password);
 }

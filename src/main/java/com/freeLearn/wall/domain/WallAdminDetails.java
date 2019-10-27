@@ -2,12 +2,14 @@ package com.freeLearn.wall.domain;
 
 import com.freeLearn.wall.model.Permission;
 import com.freeLearn.wall.model.WallAdmin;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class WallAdminDetails implements UserDetails {
     private WallAdmin admin;
     private List<Permission> permissionList;
