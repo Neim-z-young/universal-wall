@@ -1,5 +1,6 @@
 package com.freeLearn.wall.config;
 
+import com.freeLearn.wall.auth.UserDetailsByIdService;
 import com.freeLearn.wall.component.JwtAuthenticationTokenFilter;
 import com.freeLearn.wall.component.RestfulAccessDeniedHandler;
 import com.freeLearn.wall.component.RestfulAuthenticationEntryPoint;
@@ -14,7 +15,6 @@ import com.freeLearn.wall.service.WallUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -115,6 +115,20 @@ public class SecurityConfig{
                 throw new UsernameNotFoundException("用户名或密码错误");
             };
         }
+
+        /*
+        通过id查找userDetails
+         */
+        @Bean
+        public UserDetailsByIdService userDetailsByIdService(){
+            return id -> {
+                WallUser wallUser = wallUserService.getByUserId(id);
+                if(wallUser!=null){
+                    return new WallUserDetails(wallUser);
+                }
+                throw new UsernameNotFoundException("用户名或密码错误");
+            };
+        }
     }
 
     /**
@@ -147,6 +161,7 @@ public class SecurityConfig{
             http.headers().cacheControl();
             //提供jwt Filter支持，在认证过滤器前，先进行jwt过滤器认证
             //避免因认证过滤器跳过其后的所有过滤器，导致jwt Filter失效
+            //TODO 移除usernamePasswordFilter
             http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
             //添加自定义未授权和未登录的返回结果
             http.exceptionHandling()

@@ -2,16 +2,30 @@ package com.freeLearn.wall.service.impl;
 
 import com.freeLearn.wall.common.CommonResult;
 import com.freeLearn.wall.domain.WallUserDetails;
+import com.freeLearn.wall.mapper.WallUserLoginLogMapper;
 import com.freeLearn.wall.mapper.WallUserMapper;
 import com.freeLearn.wall.model.WallUser;
 import com.freeLearn.wall.model.WallUserExample;
+import com.freeLearn.wall.model.WallUserLoginLog;
 import com.freeLearn.wall.service.WallUserService;
 import com.freeLearn.wall.util.DateUtil;
+import com.freeLearn.wall.util.IPAddressUtil;
+import com.freeLearn.wall.util.JwtUtil;
+import com.freeLearn.wall.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -20,14 +34,34 @@ import java.util.List;
  * Create by oyoungy on 2019/10/26
  */
 public class WallUserServiceImpl implements WallUserService {
+    @Value("${weChat.appId")
+    private String WECHAT_APPID;
+    @Value("${weChat.secret}")
+    private String WECHAT_SECRET;
+
     @Autowired
     private WallUserMapper wallUserMapper;
+
+    @Autowired
+    private WallUserLoginLogMapper wallUserLoginLogMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private DateUtil dateUtil;
+
+    @Autowired
+    private IPAddressUtil ipAddressUtil;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordUtil passwordUtil;
 
     @Override
     public WallUser getByUsername(String username) {
@@ -75,6 +109,29 @@ public class WallUserServiceImpl implements WallUserService {
         wallUserMapper.insert(newUser);
         newUser.setPassword(null);
         return CommonResult.success(null, "注册成功");
+    }
+
+    @Override
+    public WallUser registerWeChat(String openId, String username) {
+        WallUser newUser = getByOpenId(openId);
+        if(newUser!=null){
+            return newUser;
+        }
+        newUser = new WallUser();
+        newUser.setOpenId(openId);
+        newUser.setSignupTime(dateUtil.getEpochFromDate(new Date()));
+        newUser.setStatus(true);
+        newUser.setGender(0);
+        newUser.setPoints(0);
+        newUser.setGrowth(0);
+        newUser.setUsername("wechat"+openId);
+        newUser.setPassword(passwordUtil.generateRandomPassword(15));
+        if(username!=null){
+           newUser.setUsername(username);
+        }
+        wallUserMapper.insert(newUser);
+        newUser.setPassword(null);
+        return newUser;
     }
 
     @Override
@@ -128,7 +185,55 @@ public class WallUserServiceImpl implements WallUserService {
 
     @Override
     public String login(String username, String password) {
+        String token = null;
+        try {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if(!passwordEncoder.matches(password, userDetails.getPassword())){
+                throw new BadCredentialsException("密码不正确");
+            }
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            token = jwtUtil.generateToken(userDetails);
+            insertLoginLog(((WallUserDetails)userDetails).getUser().getId());
+        }catch (AuthenticationException e){
+            //登录异常
+            System.out.println(e.getMessage());
+        }
+        return token;
+    }
 
-        return null;
+    @Override
+    public String loginWeChat(String openId) {
+        String token = null;
+        WallUser user = getByOpenId(openId);
+        if(user==null){
+            user = registerWeChat(openId, null);
+        }
+        try {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            token = jwtUtil.generateToken(userDetails);
+            insertLoginLog(((WallUserDetails)userDetails).getUser().getId());
+        }catch (AuthenticationException e){
+            //登录异常
+            System.out.println(e.getMessage());
+        }
+        return token;
+    }
+
+    @Override
+    public int insertLoginLog(Integer userId) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String ipAddress =  request.getRemoteAddr();
+
+        WallUserLoginLog wallUserLoginLog = new WallUserLoginLog();
+        wallUserLoginLog.setUserId(userId);
+        wallUserLoginLog.setCreateTime(dateUtil.getEpochFromDate(new Date()));
+        wallUserLoginLog.setIpAddress(ipAddressUtil.ipString2Long(ipAddress));
+        return wallUserLoginLogMapper.insert(wallUserLoginLog);
     }
 }

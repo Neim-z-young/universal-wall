@@ -20,7 +20,7 @@ import java.util.Map;
  * }
  * Payload  jwt负载对象
  * {
- *     "aud":
+ *     "aud": username(唯一且不为空)
  *     "created"
  *     "exp":
  * }

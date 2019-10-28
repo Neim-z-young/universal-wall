@@ -26,20 +26,23 @@ public interface CategoryService {
      */
     List<Category> getByName(String cateName);
 
+
     /**
      * 添加新类别
-     * @param cate
+     * @param category
+     * @param intro
      * @return
      */
-    CommonResult addNewCate(Category cate);
+    CommonResult addNewCate(String category, String intro);
 
     /**
      * 修改类别信息
      * @param cateId
-     * @param cate
+     * @param category
+     * @param intro
      * @return
      */
-    CommonResult updateCate(Integer cateId, Category cate);
+    CommonResult updateCate(Integer cateId, String category, String intro);
 
     /**
      * 删除某一类

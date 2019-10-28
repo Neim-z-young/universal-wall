@@ -2,6 +2,7 @@ package com.freeLearn.wall.service;
 
 import com.freeLearn.wall.common.CommonResult;
 import com.freeLearn.wall.model.WallUser;
+import com.freeLearn.wall.model.WallUserLoginLog;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,6 +40,13 @@ public interface WallUserService {
      */
     CommonResult register(String username, String password);
 
+    /**
+     * 通过微信openId注册用户，如果username为null，则自动生成唯一用户名
+     * @param openId
+     * @param username
+     * @return
+     */
+    WallUser registerWeChat(String openId, String username);
     /**
      * 修改密码
      * @param username
@@ -82,4 +90,8 @@ public interface WallUserService {
      * @return
      */
     String login(String username, String password);
+
+    String loginWeChat(String openId);
+
+    int insertLoginLog(Integer userId);
 }

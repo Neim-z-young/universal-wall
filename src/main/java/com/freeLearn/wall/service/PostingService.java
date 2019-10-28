@@ -19,7 +19,7 @@ public interface PostingService {
      * 列出所有帖子的简略信息
      * @return
      */
-    List<PostingBrief> listAll();
+    CommonResult listAll();
 
     /**
      * 按页码，页大小列出帖子的简略信息
@@ -27,7 +27,7 @@ public interface PostingService {
      * @param pageSize
      * @return
      */
-    List<PostingBrief> listPage(Integer pageNum, Integer pageSize);
+    CommonResult listPage(Integer pageNum, Integer pageSize);
 
     /**
      * 按行位移，页大小列出帖子的简略信息
@@ -35,14 +35,14 @@ public interface PostingService {
      * @param pageSize
      * @return
      */
-    List<PostingBrief> listLimit(Integer offset, Integer pageSize);
+    CommonResult listLimit(Integer offset, Integer pageSize);
 
     /**
      * 根据类别列出帖子
      * @param cateId
      * @return
      */
-    List<PostingBrief> listAllByCateId(Integer cateId);
+    CommonResult listAllByCateId(Integer cateId);
 
     /**
      * 按类别，页码，页大小列出帖子的简略信息
@@ -51,7 +51,7 @@ public interface PostingService {
      * @param pageSize
      * @return
      */
-    List<PostingBrief> listPageByCateId(Integer cateId, Integer pageNum, Integer pageSize);
+    CommonResult listPageByCateId(Integer cateId, Integer pageNum, Integer pageSize);
 
     /**
      * 按类别，行位移，页大小列出帖子的简略信息
@@ -60,14 +60,14 @@ public interface PostingService {
      * @param pageSize
      * @return
      */
-    List<PostingBrief> listLimitByCateId(Integer cateId, Integer offset, Integer pageSize);
+    CommonResult listLimitByCateId(Integer cateId, Integer offset, Integer pageSize);
 
     /**
      * 通过发布者获取帖子
      * @param posterId
      * @return
      */
-    List<PostingBrief> listAllByPosterId(Integer posterId);
+    CommonResult listAllByPosterId(Integer posterId);
 
     /**
      * 分页（by pageNum)获取发布者的帖子
@@ -76,7 +76,7 @@ public interface PostingService {
      * @param pageSize
      * @return
      */
-    List<PostingBrief> listPageByPosterId(Integer posterId, Integer pageNum, Integer pageSize);
+    CommonResult listPageByPosterId(Integer posterId, Integer pageNum, Integer pageSize);
 
     /**
      * 分页（by offset)获取发布者的帖子
@@ -85,29 +85,34 @@ public interface PostingService {
      * @param pageSize
      * @return
      */
-    List<PostingBrief> listLimitByPosterId(Integer posterId, Integer offset, Integer pageSize);
+    CommonResult listLimitByPosterId(Integer posterId, Integer offset, Integer pageSize);
 
     /**
      * 根据帖子Id获取帖子详细内容
      * @param postingId
      * @return
      */
-    PostingDetails getById(Integer postingId);
+    CommonResult getById(Integer postingId);
 
     /**
      * 发布新帖子
-     * @param posting
+     * @param posterId
+     * @param theme
+     * @param detailedIntroduction
+     * @param pictureIntroduction
+     * @param cateId
      * @return
      */
-    CommonResult addNewPosting(Posting posting);
+    CommonResult addNewPosting(Integer posterId, String theme, String detailedIntroduction, String pictureIntroduction, Integer cateId);
 
     /**
      * 修改帖子
      * @param postingId
-     * @param newPosting
+     * @param detailedIntroduction
+     * @param pictureIntroduction
      * @return
      */
-    CommonResult updatePosting(Integer postingId, Posting newPosting);
+    CommonResult updatePosting(Integer postingId, String detailedIntroduction, String pictureIntroduction);
 
     /**
      * 删除帖子

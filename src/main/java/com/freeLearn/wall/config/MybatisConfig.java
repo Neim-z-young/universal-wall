@@ -1,5 +1,7 @@
 package com.freeLearn.wall.config;
 
+import com.github.pagehelper.PageInterceptor;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan(basePackageClasses = {DataConfig.class})
@@ -40,6 +43,18 @@ public class MybatisConfig {
         factoryBean.setMapperLocations(resourcePatternResolver.getResources(resourcesPath));
         //别名，让*Mpper.xml实体类映射可以不加上具体包名
         factoryBean.setTypeAliasesPackage("com.freeLearn.wall");
+        factoryBean.setPlugins(new Interceptor[]{pageInterceptor()});
         return factoryBean.getObject();
     }
+
+    @Bean
+    private PageInterceptor pageInterceptor(){
+        PageInterceptor pageInterceptor = new PageInterceptor();
+        Properties properties = new Properties();
+        properties.setProperty("helperDialect", "mysql");
+        properties.setProperty("reasonable", "true");
+        pageInterceptor.setProperties(properties);
+        return pageInterceptor;
+    }
+
 }
