@@ -4,6 +4,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
+/**
+ * 密码生成工具类
+ * Create by oyoungy on 2019/10/28
+ */
 @Component
 public class PasswordUtil {
 

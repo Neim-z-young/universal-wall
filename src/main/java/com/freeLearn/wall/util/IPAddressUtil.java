@@ -2,6 +2,10 @@ package com.freeLearn.wall.util;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * ip地址转化工具
+ * Create by oyoungy on 2019/10/28
+ */
 @Component
 public class IPAddressUtil {
 

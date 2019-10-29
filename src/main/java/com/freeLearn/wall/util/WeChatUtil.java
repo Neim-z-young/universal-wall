@@ -14,6 +14,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * 微信工具类
+ * Create by oyoungy on 2019/10/28
+ */
 @Component
 public class WeChatUtil {
 
@@ -28,7 +32,12 @@ public class WeChatUtil {
     @Value("${weChat.secret}")
     private String WECHAT_SECRET;
 
-    String generateOpenId(String code){
+    /**
+     * 通过微信code请求openId
+     * @param code
+     * @return
+     */
+    public String generateOpenId(String code){
         String openId = null;
         String url =  "https://api.weixin.qq.com/sns/jscode2session?appid=" + WECHAT_APPID + "&secret="
                 + WECHAT_SECRET + "&js_code=" + code + "&grant_type=authorization_code";

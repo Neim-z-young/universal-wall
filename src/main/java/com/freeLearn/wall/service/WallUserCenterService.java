@@ -1,5 +1,6 @@
 package com.freeLearn.wall.service;
 
+import com.freeLearn.wall.common.CommonResult;
 import com.freeLearn.wall.domain.PostingBrief;
 import org.springframework.stereotype.Service;
 
@@ -11,5 +12,6 @@ import java.util.List;
  */
 @Service
 public interface WallUserCenterService {
-
+    CommonResult getDetailedInformation(Integer id);
+    CommonResult getDetailedInformation(String username);
 }

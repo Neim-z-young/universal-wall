@@ -1,6 +1,7 @@
 package com.freeLearn.wall.service;
 
 import com.freeLearn.wall.common.CommonResult;
+import com.freeLearn.wall.dto.WallUserParam;
 import com.freeLearn.wall.model.WallUser;
 import com.freeLearn.wall.model.WallUserLoginLog;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,13 @@ public interface WallUserService {
      * @return
      */
     CommonResult register(String username, String password);
+
+    /**
+     * 用户注册
+     * @param wallUserParam
+     * @return
+     */
+    CommonResult register(WallUserParam wallUserParam);
 
     /**
      * 通过微信openId注册用户，如果username为null，则自动生成唯一用户名

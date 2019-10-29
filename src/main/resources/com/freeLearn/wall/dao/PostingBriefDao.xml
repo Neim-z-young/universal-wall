@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.freeLearn.wall.dao.PostingBriefDao">
+  <resultMap id="PostingBriefMap" type="com.freeLearn.wall.domain.PostingBrief">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="theme" jdbcType="VARCHAR" property="theme"/>
+    <result column="brief_introduction" jdbcType="VARCHAR" property="briefIntroduction"/>
+    <result column="release_time" jdbcType="INTEGER" property="releaseTime"/>
+    <result column="poster_id" jdbcType="INTEGER" property="posterId"/>
+    <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+    <result column="click_times" jdbcType="INTEGER" property="clickTimes"/>
+  </resultMap>
+  <sql id="Brief_Column_List">
+    A.id as id,
+    A.theme as theme,
+    A.brief_introduction as brief_introduction,
+    A.release_time as release_time,
+    A.poster_id as poster_id,
+    A.category_id as category_id,
+    B.click_times as click_times
+  </sql>
+
+  <select id="listAll" resultMap="PostingBriefMap">
+    select
+    <include refid="Brief_Column_List"/>
+    from posting A left outer join posting_statistic B on A.id = B.theme_id
+  </select>
+
+  <select id="listAllByCateId" parameterType="java.lang.Integer" resultMap="PostingBriefMap">
+    select
+    <include refid="Brief_Column_List"/>
+    from posting A left outer join posting_statistic B on A.id = B.theme_id
+    where A.category_id = #{cateId, jdbcType=INTEGER}
+  </select>
+
+  <select id="listAll" parameterType="java.lang.Integer" resultMap="PostingBriefMap">
+    select
+    <include refid="Brief_Column_List"/>
+    from posting A left outer join posting_statistic B on A.id = B.theme_id
+    where A.poster_id = #{posterId, jdbcType=INTEGER}
+  </select>
+
+</mapper>

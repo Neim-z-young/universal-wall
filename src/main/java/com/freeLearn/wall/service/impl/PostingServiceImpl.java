@@ -4,11 +4,13 @@ import com.freeLearn.wall.common.CommonResult;
 import com.freeLearn.wall.dao.PostingBriefDao;
 import com.freeLearn.wall.domain.PostingBrief;
 import com.freeLearn.wall.domain.PostingDetails;
+import com.freeLearn.wall.dto.PostingParam;
 import com.freeLearn.wall.mapper.PostingMapper;
 import com.freeLearn.wall.model.Posting;
 import com.freeLearn.wall.service.PostingService;
 import com.freeLearn.wall.util.DateUtil;
 import com.github.pagehelper.PageHelper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -35,98 +37,70 @@ public class PostingServiceImpl implements PostingService {
     }
 
     @Override
-    public CommonResult listPage(Integer pageNum, Integer pageSize) {
+    public List<PostingBrief> listPage(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<PostingBrief> postingBriefList = postingBriefDao.listAll();
-        if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
-        }
-        return CommonResult.success(postingBriefList, "帖子查询成功");
+        return postingBriefDao.listAll();
+
     }
 
     @Override
-    public CommonResult listLimit(Integer offset, Integer pageSize) {
+    public List<PostingBrief> listLimit(Integer offset, Integer pageSize) {
         PageHelper.offsetPage(offset, pageSize);
-        List<PostingBrief> postingBriefList = postingBriefDao.listAll();
-        if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
-        }
-        return CommonResult.success(postingBriefList, "帖子查询成功");
+        return postingBriefDao.listAll();
     }
 
     @Override
-    public CommonResult listAllByCateId(Integer cateId) {
-        List<PostingBrief> postingBriefList =  postingBriefDao.listAllByCateId(cateId);
-        if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
-        }
-        return CommonResult.success(postingBriefList, "帖子查询成功");
+    public List<PostingBrief> listAllByCateId(Integer cateId) {
+        return postingBriefDao.listAllByCateId(cateId);
+
     }
 
     @Override
-    public CommonResult listPageByCateId(Integer cateId, Integer pageNum, Integer pageSize) {
+    public List<PostingBrief> listPageByCateId(Integer cateId, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<PostingBrief> postingBriefList =  postingBriefDao.listAllByCateId(cateId);
-        if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
-        }
-        return CommonResult.success(postingBriefList, "帖子查询成功");
+        return postingBriefDao.listAllByCateId(cateId);
     }
 
     @Override
-    public CommonResult listLimitByCateId(Integer cateId, Integer offset, Integer pageSize) {
+    public List<PostingBrief> listLimitByCateId(Integer cateId, Integer offset, Integer pageSize) {
         PageHelper.offsetPage(offset, pageSize);
-        List<PostingBrief> postingBriefList =  postingBriefDao.listAllByCateId(cateId);
-        if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
-        }
-        return CommonResult.success(postingBriefList, "帖子查询成功");
+        return postingBriefDao.listAllByCateId(cateId);
     }
 
     @Override
-    public CommonResult listAllByPosterId(Integer posterId) {
-        List<PostingBrief> postingBriefList =  postingBriefDao.listAllByPosterId(posterId);
-        if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
-        }
-        return CommonResult.success(postingBriefList, "帖子查询成功");
+    public List<PostingBrief> listAllByPosterId(Integer posterId) {
+        return postingBriefDao.listAllByPosterId(posterId);
     }
 
     @Override
-    public CommonResult listPageByPosterId(Integer posterId, Integer pageNum, Integer pageSize) {
+    public List<PostingBrief> listPageByPosterId(Integer posterId, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<PostingBrief> postingBriefList =  postingBriefDao.listAllByPosterId(posterId);
-        if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
-        }
-        return CommonResult.success(postingBriefList, "帖子查询成功");
+        return postingBriefDao.listAllByPosterId(posterId);
     }
 
     @Override
-    public CommonResult listLimitByPosterId(Integer posterId, Integer offset, Integer pageSize) {
+    public List<PostingBrief> listLimitByPosterId(Integer posterId, Integer offset, Integer pageSize) {
         PageHelper.offsetPage(offset, pageSize);
-        List<PostingBrief> postingBriefList =  postingBriefDao.listAllByPosterId(posterId);
-        if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
-        }
-        return CommonResult.success(postingBriefList, "帖子查询成功");
+        return postingBriefDao.listAllByPosterId(posterId);
+    }
+
+    @Override
+    public Posting getById(Integer postingId) {
+        return postingMapper.selectByPrimaryKey(postingId);
     }
 
     //TODO 二期任务
     @Override
-    public CommonResult getById(Integer postingId) {
+    public CommonResult getDetailedById(Integer postingId) {
         return null;
     }
 
     @Override
-    public CommonResult addNewPosting(Integer posterId, String theme, String detailedIntroduction, String pictureIntroduction, Integer cateId) {
+    public CommonResult addNewPosting(Integer posterId, PostingParam postingParam) {
         Posting posting = new Posting();
+        BeanUtils.copyProperties(postingParam, posting);
         posting.setPosterId(posterId);
-        posting.setTheme(theme);
-        posting.setBriefIntroduction(detailedIntroduction.substring(0, 20));
-        posting.setDetailedIntroduction(detailedIntroduction);
-        posting.setPictureIntroduction(pictureIntroduction);
-        posting.setCategoryId(cateId);
+        posting.setBriefIntroduction(posting.getDetailedIntroduction().substring(0, 20));
         posting.setReleaseTime(dateUtil.getEpochFromDate(new Date()));
         int res = postingMapper.insert(posting);
         if(res>0){

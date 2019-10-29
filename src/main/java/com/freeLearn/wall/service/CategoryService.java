@@ -26,6 +26,23 @@ public interface CategoryService {
      */
     List<Category> getByName(String cateName);
 
+    /**
+     * 列出所有类别
+     * @return
+     */
+    List<Category> listAll();
+
+    /**
+     * 分页列出类别
+     * @return
+     */
+    List<Category> listPage(Integer pageNum, Integer pageSize);
+
+    /**
+     * 分页列出类别
+     * @return
+     */
+    List<Category> listLimit(Integer offset, Integer pageSize);
 
     /**
      * 添加新类别

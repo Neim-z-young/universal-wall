@@ -2,6 +2,7 @@ package com.freeLearn.wall.service.impl;
 
 import com.freeLearn.wall.common.CommonResult;
 import com.freeLearn.wall.domain.WallUserDetails;
+import com.freeLearn.wall.dto.WallUserParam;
 import com.freeLearn.wall.mapper.WallUserLoginLogMapper;
 import com.freeLearn.wall.mapper.WallUserMapper;
 import com.freeLearn.wall.model.WallUser;
@@ -12,8 +13,11 @@ import com.freeLearn.wall.util.DateUtil;
 import com.freeLearn.wall.util.IPAddressUtil;
 import com.freeLearn.wall.util.JwtUtil;
 import com.freeLearn.wall.util.PasswordUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -34,10 +38,8 @@ import java.util.List;
  * Create by oyoungy on 2019/10/26
  */
 public class WallUserServiceImpl implements WallUserService {
-    @Value("${weChat.appId")
-    private String WECHAT_APPID;
-    @Value("${weChat.secret}")
-    private String WECHAT_SECRET;
+    @Value("${jwt.userRole")
+    private String ROLE_USER;
 
     @Autowired
     private WallUserMapper wallUserMapper;
@@ -54,6 +56,7 @@ public class WallUserServiceImpl implements WallUserService {
     @Autowired
     private IPAddressUtil ipAddressUtil;
 
+    //TODO 绑定UserDetailService
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -112,6 +115,27 @@ public class WallUserServiceImpl implements WallUserService {
     }
 
     @Override
+    public CommonResult register(WallUserParam wallUserParam) {
+        //查询用户是否存在
+        WallUser user = getByUsername(wallUserParam.getUsername());
+        if(user!=null){
+            return CommonResult.failed("用户名已存在");
+        }
+        WallUser wallUser = new WallUser();
+        BeanUtils.copyProperties(wallUserParam, wallUser);
+        String encodedPass = passwordEncoder.encode(wallUser.getPassword());
+        wallUser.setPassword(encodedPass);
+        wallUser.setSignupTime(dateUtil.getEpochFromDate(new Date()));
+        wallUser.setStatus(true);
+        wallUser.setPoints(0);
+        wallUser.setGrowth(0);
+
+        wallUserMapper.insert(wallUser);
+        wallUser.setPassword(null);
+        return CommonResult.success(null, "注册成功");
+    }
+
+    @Override
     public WallUser registerWeChat(String openId, String username) {
         WallUser newUser = getByOpenId(openId);
         if(newUser!=null){
@@ -150,11 +174,14 @@ public class WallUserServiceImpl implements WallUserService {
 
     @Override
     public WallUser getCurrentUser() {
-        WallUserDetails userDetails = (WallUserDetails) SecurityContextHolder
-                                        .getContext()
-                                        .getAuthentication()
-                                        .getPrincipal();
-        return userDetails.getUser();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        if(userDetails instanceof WallUserDetails){
+            return ((WallUserDetails) userDetails).getUser();
+        }
+        return null;
     }
 
     @Override
@@ -188,13 +215,16 @@ public class WallUserServiceImpl implements WallUserService {
         String token = null;
         try {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if(!(userDetails instanceof WallUserDetails)){
+                throw new AuthenticationServiceException("认证服务异常");
+            }
             if(!passwordEncoder.matches(password, userDetails.getPassword())){
                 throw new BadCredentialsException("密码不正确");
             }
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            token = jwtUtil.generateToken(userDetails);
+            token = jwtUtil.generateToken(userDetails, ROLE_USER);
             insertLoginLog(((WallUserDetails)userDetails).getUser().getId());
         }catch (AuthenticationException e){
             //登录异常
@@ -212,10 +242,13 @@ public class WallUserServiceImpl implements WallUserService {
         }
         try {
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+            if(!(userDetails instanceof WallUserDetails)){
+                throw new AuthenticationServiceException("认证服务异常");
+            }
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            token = jwtUtil.generateToken(userDetails);
+            token = jwtUtil.generateToken(userDetails, ROLE_USER);
             insertLoginLog(((WallUserDetails)userDetails).getUser().getId());
         }catch (AuthenticationException e){
             //登录异常

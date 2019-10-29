@@ -1,5 +1,7 @@
 package com.freeLearn.wall.util;
 
+import com.freeLearn.wall.domain.WallAdminDetails;
+import com.freeLearn.wall.domain.WallUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -23,6 +25,7 @@ import java.util.Map;
  *     "aud": username(唯一且不为空)
  *     "created"
  *     "exp":
+ *     "sub": (用户角色)
  * }
  * Signature  jwt签名
  * {
@@ -36,12 +39,19 @@ import java.util.Map;
 public class JwtUtil {
     private static final String CLAIM_USERNAME_KEY = "aud";
     private static final String CLAIM_CREATED_KEY = "created";
+    private static final String CLAIM_ROLE_KEY = "sub";
 
     @Value("${jwt.secret}")  //未进行base64编码
     private String secret;
 
     @Value("${jwt.expiration")
     private Long expiration;
+
+    @Value("${jwt.userRole")
+    private String userRole;
+
+    @Value("${jwt.adminRole}")
+    private String adminRole;
 
     /**
      * 生成token
@@ -101,6 +111,22 @@ public class JwtUtil {
     }
 
     /**
+     * 从token中获取角色
+     * @param token
+     * @return
+     */
+    public String getRoleFromToken(String token){
+        String role;
+        Claims claims = getClaimsFromToken(token);
+        try{
+            role = claims.getSubject();
+        }catch (Exception e){
+            role = null;
+        }
+        return role;
+    }
+
+    /**
      * 从token中获取过期时间
      * @param token
      * @return
@@ -143,9 +169,16 @@ public class JwtUtil {
      * @param userDetails
      * @return
      */
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(CLAIM_USERNAME_KEY, userDetails.getUsername());
+        if(role!=null){
+            if(role.equals(userRole)){
+                claims.put(CLAIM_ROLE_KEY, userRole);
+            }else if(role.equals(adminRole)){
+                claims.put(CLAIM_ROLE_KEY, adminRole);
+            }
+        }
         return generateToken(claims);
     }
 

@@ -11,6 +11,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
     excludeFilters = {
         @ComponentScan.Filter(type=FilterType.ANNOTATION, value = {EnableWebMvc.class})
     })
-@PropertySource("classpath:platform.properties")
+@PropertySource({"classpath:platform.properties", "classpath:application.properties"})
 public class RootConfig {
 }

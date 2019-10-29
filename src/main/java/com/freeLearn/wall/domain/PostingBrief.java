@@ -19,4 +19,6 @@ public class PostingBrief {
 //    private String pictureIntroduction;
     private Integer releaseTime;
     private Integer posterId;
+    private Integer categoryId;
+    private Integer clickTimes;
 }

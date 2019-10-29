@@ -6,6 +6,7 @@ import com.freeLearn.wall.model.Category;
 import com.freeLearn.wall.model.CategoryExample;
 import com.freeLearn.wall.service.CategoryService;
 import com.freeLearn.wall.util.DateUtil;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -28,6 +29,26 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getByName(String cateName) {
         CategoryExample example = new CategoryExample();
         example.createCriteria().andCategoryLike("%"+cateName+"%");
+        return categoryMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<Category> listAll() {
+        CategoryExample example = new CategoryExample();
+        return categoryMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<Category> listPage(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        CategoryExample example = new CategoryExample();
+        return categoryMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<Category> listLimit(Integer offset, Integer pageSize) {
+        PageHelper.offsetPage(offset, pageSize);
+        CategoryExample example = new CategoryExample();
         return categoryMapper.selectByExample(example);
     }
 

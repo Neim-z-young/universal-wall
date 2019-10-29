@@ -1,9 +1,9 @@
 package com.freeLearn.wall.config;
 
 import com.freeLearn.wall.auth.UserDetailsByIdService;
-import com.freeLearn.wall.component.JwtAuthenticationTokenFilter;
-import com.freeLearn.wall.component.RestfulAccessDeniedHandler;
-import com.freeLearn.wall.component.RestfulAuthenticationEntryPoint;
+import com.freeLearn.wall.auth.WallAdminAuthenticationProvider;
+import com.freeLearn.wall.auth.WallUserAuthenticationProvider;
+import com.freeLearn.wall.component.*;
 import com.freeLearn.wall.domain.WallAdminDetails;
 import com.freeLearn.wall.domain.WallUserDetails;
 import com.freeLearn.wall.model.Permission;
@@ -13,10 +13,13 @@ import com.freeLearn.wall.service.WallAdminService;
 import com.freeLearn.wall.service.WallUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,8 +40,14 @@ import java.util.List;
  */
 @Configuration
 @EnableWebMvcSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
-public class SecurityConfig{
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Value("${jwt.userRole}")
+    private String ROLE_USER_PREFIX;
+
+    @Value("${jwt.adminRole}")
+    private String ROLE_ADMIN_PREFIX;
 
     @Autowired
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
@@ -46,149 +55,95 @@ public class SecurityConfig{
     @Autowired
     private RestfulAuthenticationEntryPoint restfulAuthenticationEntryPoint;
 
-    //jwt Filter
     @Bean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
-        return new JwtAuthenticationTokenFilter();
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsServiceImpl();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public UserDetailsService adminDetailsService() {
+        return new AdminDetailsServiceImpl();
+    }
+
+    //jwt Filter
+    @Bean
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() throws Exception {
+        JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter();
+        //TODO 这样设置能保证Bean调用正确吗
+        jwtAuthenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
+        //TODO set auth success/failed handler
+
+        return jwtAuthenticationTokenFilter;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * 微信端用户请求配置类
-     */
-    @Configuration
-    @Order(1)
-    public class UserSecurityConfig  extends WebSecurityConfigurerAdapter {
-        @Autowired
-        private WallUserService wallUserService;
+    @Bean
+    public WallAdminAuthenticationProvider wallAdminAuthenticationProvider(){
+        WallAdminAuthenticationProvider wallAdminAuthenticationProvider = new WallAdminAuthenticationProvider();
+        //TODO 这样设置能保证Bean调用正确吗
+        wallAdminAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        wallAdminAuthenticationProvider.setUserDetailsService(adminDetailsService());
+        wallAdminAuthenticationProvider.setROLE_ADMIN_PREFIX(ROLE_ADMIN_PREFIX);
+        return wallAdminAuthenticationProvider;
+    }
 
+    @Bean
+    public WallUserAuthenticationProvider wallUserAuthenticationProvider(){
+        WallUserAuthenticationProvider wallUserAuthenticationProvider = new WallUserAuthenticationProvider();
+        //TODO 这样设置能保证Bean调用正确吗
+        wallUserAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        wallUserAuthenticationProvider.setROLE_USER_PREFIX(ROLE_USER_PREFIX);
+        wallUserAuthenticationProvider.setUserDetailsService(userDetailsService());
+        return wallUserAuthenticationProvider;
+    }
 
-        //配置Spring Security 的Filter链
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-        }
+    //配置Spring Security 的Filter链
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+    }
 
-        //配置如何通过拦截器保护请求
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http
-                    .authorizeRequests()
-                    .anyRequest().permitAll()
-                    .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
-                    .permitAll()
-                    .and()
-                    .formLogin().and()
-                    .httpBasic();
+    //配置如何通过拦截器保护请求
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
+                .permitAll()
+                .and()
+                .formLogin().and()
+                .httpBasic();
 
-            // 禁用缓存（不使用session，故基本用不上缓存）
-            http.headers().cacheControl();
-            //提供jwt Filter支持，在认证过滤器前，先进行jwt过滤器认证
-            //避免因认证过滤器跳过其后的所有过滤器，导致jwt Filter失效
-            http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-            //添加自定义未授权和未登录的返回结果
-            http.exceptionHandling()
-                    .accessDeniedHandler(restfulAccessDeniedHandler)
-                    .authenticationEntryPoint(restfulAuthenticationEntryPoint);
-        }
-
-        //配置userDetailsService
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userDetailsService())  //使用自定义后台用户服务
-                    .passwordEncoder(passwordEncoder());   //加密方式
-        }
-
-        //TODO 将前后端的userDetailsService分离，前端不同，提供的用户服务也有所差别
-        //前端用户，唯一username
-        //TODO 完善微信端用户服务，
-        @Bean
-        public UserDetailsService userDetailsService(){
-            return username -> {
-                WallUser wallUser = wallUserService.getByUsername(username);
-                if(wallUser!=null){
-                    return new WallUserDetails(wallUser);
-                }
-                throw new UsernameNotFoundException("用户名或密码错误");
-            };
-        }
-
-        /*
-        通过id查找userDetails
-         */
-        @Bean
-        public UserDetailsByIdService userDetailsByIdService(){
-            return id -> {
-                WallUser wallUser = wallUserService.getByUserId(id);
-                if(wallUser!=null){
-                    return new WallUserDetails(wallUser);
-                }
-                throw new UsernameNotFoundException("用户名或密码错误");
-            };
-        }
+        // 禁用缓存（不使用session，故基本用不上缓存）
+        http.headers().cacheControl();
+        //避免因认证过滤器跳过其后的所有过滤器，导致jwt Filter失效
+        http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        //添加自定义未授权和未登录的返回结果
+        http.exceptionHandling()
+                .accessDeniedHandler(restfulAccessDeniedHandler)
+                .authenticationEntryPoint(restfulAuthenticationEntryPoint);
     }
 
     /**
-     * 后台请求配置类
+     * 认证配置的多个authenticationProvider
+     * @return
+     * @throws Exception
      */
-    @Configuration
-    public class AdminSecurityConfig extends WebSecurityConfigurerAdapter{
-        @Autowired
-        private WallAdminService wallAdminService;
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-
-        //配置Spring Security 的Filter链
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-        }
-
-        //配置如何通过拦截器保护请求
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http
-                    .authorizeRequests()
-                    .anyRequest().permitAll()
-                    .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
-                    .permitAll()
-                    .and()
-                    .formLogin().and()
-                    .httpBasic();
-
-            // 禁用缓存（不使用session，故基本用不上缓存）
-            http.headers().cacheControl();
-            //提供jwt Filter支持，在认证过滤器前，先进行jwt过滤器认证
-            //避免因认证过滤器跳过其后的所有过滤器，导致jwt Filter失效
-            //TODO 移除usernamePasswordFilter
-            http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-            //添加自定义未授权和未登录的返回结果
-            http.exceptionHandling()
-                    .accessDeniedHandler(restfulAccessDeniedHandler)
-                    .authenticationEntryPoint(restfulAuthenticationEntryPoint);
-        }
-
-        //配置userDetailsService
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userDetailsService())  //使用自定义后台用户服务
-                    .passwordEncoder(passwordEncoder());   //加密方式
-        }
-
-        //后台用户userDetailService
-        //TODO 这里可能会出错，因为配置了两个同名Bean
-        @Bean
-        public UserDetailsService userDetailsService(){
-            return username -> {
-                WallAdmin wallAdmin = wallAdminService.getByUsername(username);
-                if(wallAdmin!=null){
-                    List<Permission> permissions = wallAdminService.getPermissionList(wallAdmin.getId());
-                    return new WallAdminDetails(wallAdmin, permissions);
-                }
-                throw new UsernameNotFoundException("用户名或密码错误");
-            };
-        }
+    //配置userDetailsService
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(wallAdminAuthenticationProvider())
+                .authenticationProvider(wallUserAuthenticationProvider());
     }
 
 }

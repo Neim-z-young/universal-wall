@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.freeLearn.wall.dao.WallUserDetailedInformationDao">
+  <resultMap id="DetailedInformationMap" type="com.freeLearn.wall.domain.WallUserDetailedInformation">
+    <result column="username" jdbcType="VARCHAR" property="username"/>
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+    <result column="gender" jdbcType="INTEGER" property="gender"/>
+    <result column="growth" jdbcType="INTEGER" property="growth"/>
+    <result column="points" jdbcType="INTEGER" property="points"/>
+    <result column="university" jdbcType="VARCHAR" property="university"/>
+    <result column="school_number" jdbcType="VARCHAR" property="schoolNumber"/>
+    <result column="is_real_name_registered" jdbcType="BIT" property="isRealNameRegistered"/>
+  </resultMap>
+
+  <sql id="Relation_Column_List">
+    A.username as username,
+    A.nick_name as nick_name,
+    A.gender as gender,
+    A.growth as growth,
+    A.points as points,
+    B.university as university,
+    B.school_number as school_number,
+    B.is_real_name_registered as is_real_name_registered
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="DetailedInformationMap">
+    select
+    <include refid="Relation_Column_List"/>
+    from wall_user A
+      left outer join wall_user_information B on A.id=B.user_id
+    where A.id = #{id, jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByUsername" parameterType="java.lang.String" resultMap="DetailedInformationMap">
+    select
+    <include refid="Relation_Column_List"/>
+    from wall_user A
+    left outer join wall_user_information B on A.id=B.user_id
+    where A.username = #{username, jdbcType=VARCHAR}
+  </select>
+</mapper>
