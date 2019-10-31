@@ -1,8 +1,8 @@
 
-DROP TABLE if EXISTS `wall_users`;
-CREATE TABLE `wall_users`(
+DROP TABLE if EXISTS `wall_user`;
+CREATE TABLE `wall_user`(
 	`id` int not NULL auto_increment,
-	`username` VARCHAR(50) COMMENT"用户唯一名称",
+	`username` VARCHAR(50) NOT NULL COMMENT"用户唯一名称",
 	`password` VARCHAR(128) COMMENT"加密后的密码",
 	`email` VARCHAR(256),
 	`open_id` VARCHAR(30) COMMENT"微信openid",
@@ -16,11 +16,12 @@ CREATE TABLE `wall_users`(
 	`points` int COMMENT"用户积分",
 	PRIMARY KEY(`id`),
 	unique(`open_id`),
-	UNIQUE(`username`)
+	UNIQUE(`username`),
+	unique(`email`)
 )auto_increment=10000;
 
-DROP TABLE if EXISTS `wall_user_Information`;
-CREATE TABLE `wall_user_Information`(
+DROP TABLE if EXISTS `wall_user_information`;
+CREATE TABLE `wall_user_information`(
 	`id` int not null auto_increment,
 	`user_id` int,
 	`role_id` int,
@@ -49,7 +50,8 @@ CREATE TABLE `wall_admin`(
 	`status` TINYINT(1) COMMENT"帐号启用状态：0->禁用；1->启用",
 	`is_online` TINYINT(1) COMMENT"是否在线",
 	PRIMARY KEY(`id`),
-	UNIQUE(`username`)
+	UNIQUE(`username`),
+	unique(`email`)
 )auto_increment=10000;
 
 DROP TABLE if EXISTS `wall_user_login_log`;
@@ -70,8 +72,8 @@ CREATE TABLE `wall_admin_login_log`(
 	PRIMARY KEY(`id`)
 );
 
-DROP TABLE if EXISTS `postings`;
-CREATE table `postings`(
+DROP TABLE if EXISTS `posting`;
+CREATE table `posting`(
 	`id` int not NULL auto_increment,
 	`theme` VARCHAR(50) COMMENT"帖子主题",
 	`brief_introduction` VARCHAR(50) COMMENT"简易说明，由后端截取",
@@ -83,8 +85,8 @@ CREATE table `postings`(
 	PRIMARY key(`id`)
 	);
 
-DROP TABLE if EXISTS `postings_statistics`;
-CREATE table `postings_statistics`(
+DROP TABLE if EXISTS `posting_statistic`;
+CREATE table `posting_statistic`(
 	`id` int not NULL auto_increment,
 	`theme_id` int,
 	`click_times` int COMMENT"点击次数",
@@ -95,8 +97,8 @@ CREATE table `postings_statistics`(
 	PRIMARY KEY(`id`)
 	);
 
-DROP TABLE if EXISTS `floors`;
-CREATE TABLE `floors`(
+DROP TABLE if EXISTS `floor`;
+CREATE TABLE `floor`(
 	`id` int not NULL auto_increment,
 	`theme_id` int,
 	`reply_time` int,
@@ -105,8 +107,8 @@ CREATE TABLE `floors`(
 	`is_read` TINYINT(1) COMMENT"是否查看",
 	PRIMARY key(`id`)
 	);
-DROP TABLE if EXISTS `inside_floors`;
-CREATE table `inside_floors`(
+DROP TABLE if EXISTS `inside_floor`;
+CREATE table `inside_floor`(
 	`id` int not NULL auto_increment,
 	`floors_id` int COMMENT"楼层id",
 	`reply_time` int,
@@ -124,8 +126,8 @@ CREATE TABLE `wall_user_message`(
 	PRIMARY KEY(`id`)
 	);
 
-DROP TABLE if EXISTS `wall_user_statistics`;
-CREATE TABLE `wall_user_statistics`(
+DROP TABLE if EXISTS `wall_user_statistic`;
+CREATE TABLE `wall_user_statistic`(
 	`id` int not NULL auto_increment,
 	`user_id` int,
 	`postings_num` int COMMENT"发帖数",
@@ -133,8 +135,8 @@ CREATE TABLE `wall_user_statistics`(
 	PRIMARY KEY(`id`)
 	);
 
-DROP TABLE if EXISTS `categories`;
-CREATE TABLE `categories`(
+DROP TABLE if EXISTS `category`;
+CREATE TABLE `category`(
 	`id` int not NULL auto_increment,
 	`category` varchar(50) COMMENT"帖子类别",
 	`introduction` VARCHAR(200),
@@ -143,16 +145,16 @@ CREATE TABLE `categories`(
 	PRIMARY KEY(`id`)
 	);
 
-DROP TABLE if EXISTS `permissions`;
-CREATE TABLE `permissions`(
+DROP TABLE if EXISTS `permission`;
+CREATE TABLE `permission`(
 	`id` int not NULL auto_increment,
 	`peimission` varchar(20) COMMENT"用户权限",
 	`introduction` varchar(200),
 	PRIMARY KEY(`id`)
 	);
 
-DROP TABLE if EXISTS `roles`;
-CREATE TABLE `roles`(
+DROP TABLE if EXISTS `role`;
+CREATE TABLE `role`(
 	`id` int not NULL auto_increment,
 	`name` varchar(50) COMMENT"角色",
 	`introduction` varchar(200),

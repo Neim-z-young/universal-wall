@@ -10,7 +10,6 @@ import java.util.List;
  * 分类管理服务
  * Create by oyoungy on 2019/10/26
  */
-@Service
 public interface CategoryService {
     /**
      * 通过id获取类别

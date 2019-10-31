@@ -1,5 +1,6 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class WallUserMessage implements Serializable {
@@ -8,6 +9,7 @@ public class WallUserMessage implements Serializable {
     private Integer userId;
 
     // key:value(theme:int;floor:int;inside_floor:int)
+    @ApiModelProperty(value = "key:value(theme:int;floor:int;inside_floor:int)")
     private String message;
 
     private static final long serialVersionUID = 1L;

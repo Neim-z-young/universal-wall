@@ -14,7 +14,6 @@ import java.util.List;
  * 帖子服务
  * Create by oyoungy on 2019/10/26
  */
-@Service
 public interface PostingService {
     /**
      * 列出所有帖子的简略信息

@@ -1,6 +1,7 @@
 package com.freeLearn.wall.service.impl;
 
 import com.freeLearn.wall.common.CommonResult;
+import com.freeLearn.wall.component.WallUserDetailsService;
 import com.freeLearn.wall.domain.WallUserDetails;
 import com.freeLearn.wall.dto.WallUserParam;
 import com.freeLearn.wall.mapper.WallUserLoginLogMapper;
@@ -16,15 +17,15 @@ import com.freeLearn.wall.util.PasswordUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -37,6 +38,7 @@ import java.util.List;
  * 用户服务实现类
  * Create by oyoungy on 2019/10/26
  */
+@Service
 public class WallUserServiceImpl implements WallUserService {
     @Value("${jwt.userRole")
     private String ROLE_USER;
@@ -58,7 +60,7 @@ public class WallUserServiceImpl implements WallUserService {
 
     //TODO 绑定UserDetailService
     @Autowired
-    private UserDetailsService userDetailsService;
+    private WallUserDetailsService userDetailsService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -174,12 +176,14 @@ public class WallUserServiceImpl implements WallUserService {
 
     @Override
     public WallUser getCurrentUser() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder
+        Authentication authentication = SecurityContextHolder
                 .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        if(userDetails instanceof WallUserDetails){
-            return ((WallUserDetails) userDetails).getUser();
+                .getAuthentication();
+        if(authentication!=null && authentication.getPrincipal()!=null){
+            UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+            if(userDetails instanceof WallUserDetails){
+                return ((WallUserDetails) userDetails).getUser();
+            }
         }
         return null;
     }

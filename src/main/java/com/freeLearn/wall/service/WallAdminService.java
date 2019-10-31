@@ -11,7 +11,6 @@ import java.util.List;
  * 管理员服务
  * Create by oyoungy on 2019/10/26
  */
-@Service
 public interface WallAdminService {
     /**
      * 通过username查找后台用户

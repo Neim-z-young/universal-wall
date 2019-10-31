@@ -5,7 +5,9 @@ import com.freeLearn.wall.dao.WallUserDetailedInformationDao;
 import com.freeLearn.wall.domain.WallUserDetailedInformation;
 import com.freeLearn.wall.service.WallUserCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class WallUserCenterServiceImpl implements WallUserCenterService {
     @Autowired
     private WallUserDetailedInformationDao wallUserDetailedInformationDao;

@@ -1,5 +1,6 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class WallUserStatistic implements Serializable {
@@ -8,9 +9,11 @@ public class WallUserStatistic implements Serializable {
     private Integer userId;
 
     // 发帖数
+    @ApiModelProperty(value = "发帖数")
     private Integer postingsNum;
 
     // 未读消息
+    @ApiModelProperty(value = "未读消息")
     private Integer unreadMessages;
 
     private static final long serialVersionUID = 1L;

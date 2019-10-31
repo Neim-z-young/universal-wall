@@ -1,38 +1,24 @@
 package com.freeLearn.wall.config;
 
-import com.freeLearn.wall.auth.UserDetailsByIdService;
 import com.freeLearn.wall.auth.WallAdminAuthenticationProvider;
 import com.freeLearn.wall.auth.WallUserAuthenticationProvider;
 import com.freeLearn.wall.component.*;
-import com.freeLearn.wall.domain.WallAdminDetails;
-import com.freeLearn.wall.domain.WallUserDetails;
-import com.freeLearn.wall.model.Permission;
-import com.freeLearn.wall.model.WallAdmin;
-import com.freeLearn.wall.model.WallUser;
-import com.freeLearn.wall.service.WallAdminService;
-import com.freeLearn.wall.service.WallUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.List;
 
 /**
  * 查阅spring-security文档后，学习到了可以配置多个securityConfiguration
@@ -56,13 +42,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private RestfulAuthenticationEntryPoint restfulAuthenticationEntryPoint;
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl();
+    public WallUserDetailsService userDetailsService() {
+        return new WallUserDetailsService();
     }
 
     @Bean
-    public UserDetailsService adminDetailsService() {
-        return new AdminDetailsServiceImpl();
+    public WallAdminDetailsService adminDetailsService() {
+        return new WallAdminDetailsService();
     }
 
     //jwt Filter
@@ -111,12 +97,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .anyRequest().permitAll()
                 .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
-                .permitAll()
-                .and()
-                .formLogin().and()
-                .httpBasic();
+                    .permitAll()
+                .anyRequest()
+                    .permitAll();
+
+        http.csrf().disable();
 
         // 禁用缓存（不使用session，故基本用不上缓存）
         http.headers().cacheControl();

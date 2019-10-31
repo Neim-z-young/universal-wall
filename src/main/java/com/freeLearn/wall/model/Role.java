@@ -1,11 +1,13 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class Role implements Serializable {
     private Integer id;
 
     // 角色
+    @ApiModelProperty(value = "角色")
     private String name;
 
     private String introduction;

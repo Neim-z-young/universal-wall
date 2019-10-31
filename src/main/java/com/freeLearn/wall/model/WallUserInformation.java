@@ -1,5 +1,6 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class WallUserInformation implements Serializable {
@@ -14,6 +15,7 @@ public class WallUserInformation implements Serializable {
     private String schoolNumber;
 
     // 是否实名
+    @ApiModelProperty(value = "是否实名")
     private Boolean isRealNameRegistered;
 
     private String idCard;

@@ -1,11 +1,13 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class Category implements Serializable {
     private Integer id;
 
     // 帖子类别
+    @ApiModelProperty(value = "帖子类别")
     private String category;
 
     private String introduction;
@@ -13,6 +15,7 @@ public class Category implements Serializable {
     private Integer createTime;
 
     // 置顶帖
+    @ApiModelProperty(value = "置顶帖")
     private Integer topPostings;
 
     private static final long serialVersionUID = 1L;

@@ -1,5 +1,6 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class AdminRoleRelation implements Serializable {

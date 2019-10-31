@@ -1,11 +1,13 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class Permission implements Serializable {
     private Integer id;
 
     // 用户权限
+    @ApiModelProperty(value = "用户权限")
     private String peimission;
 
     private String introduction;

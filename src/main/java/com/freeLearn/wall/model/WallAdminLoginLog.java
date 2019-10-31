@@ -1,5 +1,6 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class WallAdminLoginLog implements Serializable {
@@ -10,6 +11,7 @@ public class WallAdminLoginLog implements Serializable {
     private Integer createTime;
 
     // 通过INET_ATON()/INET_NTOA()转换
+    @ApiModelProperty(value = "通过INET_ATON()/INET_NTOA()转换")
     private Long ipAddress;
 
     private static final long serialVersionUID = 1L;

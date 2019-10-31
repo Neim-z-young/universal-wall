@@ -77,6 +77,10 @@ dependencies {
     //hutool
     compile "cn.hutool:hutool-all:$hutoolAllVersion"
 
+    //swagger-ui
+    compile "io.springfox:springfox-swagger2:$swaggerVersion"
+    compile "io.springfox:springfox-swagger-ui:$swaggerVersion"
+
     compile "javax.servlet:jstl:$jstlVersion"
     providedCompile "javax.servlet:javax.servlet-api:$servletApiVersion"
     providedCompile "javax.servlet.jsp:jsp-api:$jspApiVersion"
@@ -96,14 +100,23 @@ wrapper{
     gradleVersion = '5.4'
 }
 
+war {
+    archiveName 'wall.war'
+}
+
 task deploy {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                println 'Copy war package...'+buildDir.toString() + '/libs/spittr.war'
-                put from: buildDir.toString() + '/libs/spittr.war', into: '/usr/local/apache-tomcat9/webapps'
+                println 'Copy war package...'+buildDir.toString() + '/libs/wall.war'
+                put from: buildDir.toString() + '/libs/wall.war', into: '/usr/local/apache-tomcat9/webapps'
                 //execute 'sudo service tomcat restart'
                 println 'Copied'
+                println 'try to depackage and chmod....'
+                sleep(15000)
+                println 'chmod to 755...'
+                execute 'sudo chmod -R 755 /usr/local/apache-tomcat9/webapps/wall'
+                println 'changed successed'
             }
         }
     }
@@ -114,7 +127,7 @@ task chmod {
         ssh.run {
             session(remotes.webServer) {
                 println 'chmod to 755...'
-                execute 'sudo chmod -R 755 /usr/local/apache-tomcat9/webapps/spittr'
+                execute 'sudo chmod -R 755 /usr/local/apache-tomcat9/webapps/wall'
                 println 'changed successed'
             }
         }

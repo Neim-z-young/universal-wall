@@ -1,11 +1,13 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class InsideFloor implements Serializable {
     private Integer id;
 
     // 楼层id
+    @ApiModelProperty(value = "楼层id")
     private Integer floorsId;
 
     private Integer replyTime;

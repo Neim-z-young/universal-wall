@@ -24,7 +24,6 @@ import java.io.IOException;
  * <p>
  * Create by oyoungy on 2019/10/25
  */
-@Component
 public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessingFilter {
     @Autowired
     private JwtUtil jwtUtil;

@@ -1,22 +1,27 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class WallUser implements Serializable {
     private Integer id;
 
     // 用户唯一名称
+    @ApiModelProperty(value = "用户唯一名称")
     private String username;
 
     // 加密后的密码
+    @ApiModelProperty(value = "加密后的密码")
     private String password;
 
     private String email;
 
     // 微信openid
+    @ApiModelProperty(value = "微信openid")
     private String openId;
 
     // 昵称, 可与他人重复
+    @ApiModelProperty(value = "昵称, 可与他人重复")
     private String nickName;
 
     private Integer lastLogin;
@@ -24,18 +29,23 @@ public class WallUser implements Serializable {
     private Integer signupTime;
 
     // 帐号启用状态：0->禁用；1->启用
+    @ApiModelProperty(value = "帐号启用状态：0->禁用；1->启用")
     private Boolean status;
 
     // 是否在线
+    @ApiModelProperty(value = "是否在线")
     private Boolean isOnline;
 
     // 0->未知,1->男,2->女
+    @ApiModelProperty(value = "0->未知,1->男,2->女")
     private Integer gender;
 
     // 成长值
+    @ApiModelProperty(value = "成长值")
     private Integer growth;
 
     // 用户积分
+    @ApiModelProperty(value = "用户积分")
     private Integer points;
 
     private static final long serialVersionUID = 1L;

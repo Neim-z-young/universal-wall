@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
  * 用户服务
  * Create by oyoungy on 2019/10/25
  */
-@Service
 public interface WallUserService {
     /**
      * 通过username查找用户

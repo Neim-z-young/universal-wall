@@ -1,5 +1,6 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class Floor implements Serializable {
@@ -14,6 +15,7 @@ public class Floor implements Serializable {
     private Integer userId;
 
     // 是否查看
+    @ApiModelProperty(value = "是否查看")
     private Boolean isRead;
 
     private static final long serialVersionUID = 1L;

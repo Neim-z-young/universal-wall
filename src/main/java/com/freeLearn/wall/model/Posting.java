@@ -1,25 +1,31 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class Posting implements Serializable {
     private Integer id;
 
     // 帖子主题
+    @ApiModelProperty(value = "帖子主题")
     private String theme;
 
     // 简易说明，由后端截取
+    @ApiModelProperty(value = "简易说明，由后端截取")
     private String briefIntroduction;
 
     // 详细说明
+    @ApiModelProperty(value = "详细说明")
     private String detailedIntroduction;
 
     // 图片说明
+    @ApiModelProperty(value = "图片说明")
     private String pictureIntroduction;
 
     private Integer releaseTime;
 
     // 发帖者id
+    @ApiModelProperty(value = "发帖者id")
     private Integer posterId;
 
     private Integer categoryId;

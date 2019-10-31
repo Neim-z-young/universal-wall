@@ -1,5 +1,6 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class PostingStatistic implements Serializable {
@@ -8,12 +9,15 @@ public class PostingStatistic implements Serializable {
     private Integer themeId;
 
     // 点击次数
+    @ApiModelProperty(value = "点击次数")
     private Integer clickTimes;
 
     // 最后修改时间
+    @ApiModelProperty(value = "最后修改时间")
     private Integer lastModify;
 
     // 最后阅览时间
+    @ApiModelProperty(value = "最后阅览时间")
     private Integer lastView;
 
     private Integer posterId;

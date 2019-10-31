@@ -33,7 +33,7 @@
     where A.category_id = #{cateId, jdbcType=INTEGER}
   </select>
 
-  <select id="listAll" parameterType="java.lang.Integer" resultMap="PostingBriefMap">
+  <select id="listAllByPosterId" parameterType="java.lang.Integer" resultMap="PostingBriefMap">
     select
     <include refid="Brief_Column_List"/>
     from posting A left outer join posting_statistic B on A.id = B.theme_id

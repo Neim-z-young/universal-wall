@@ -35,7 +35,6 @@ import java.util.Map;
  * Create by oyoungy on 2019/10/25
  */
 @Component
-@PropertySource("classpath:application.Properties")
 public class JwtUtil {
     private static final String CLAIM_USERNAME_KEY = "aud";
     private static final String CLAIM_CREATED_KEY = "created";
@@ -44,10 +43,10 @@ public class JwtUtil {
     @Value("${jwt.secret}")  //未进行base64编码
     private String secret;
 
-    @Value("${jwt.expiration")
+    @Value("${jwt.expiration}")
     private Long expiration;
 
-    @Value("${jwt.userRole")
+    @Value("${jwt.userRole}")
     private String userRole;
 
     @Value("${jwt.adminRole}")

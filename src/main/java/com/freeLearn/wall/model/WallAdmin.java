@@ -1,5 +1,6 @@
 package com.freeLearn.wall.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class WallAdmin implements Serializable {
@@ -8,6 +9,7 @@ public class WallAdmin implements Serializable {
     private String username;
 
     // 加密后的密码
+    @ApiModelProperty(value = "加密后的密码")
     private String password;
 
     private String email;
@@ -15,6 +17,7 @@ public class WallAdmin implements Serializable {
     private String nickName;
 
     // 备注信息
+    @ApiModelProperty(value = "备注信息")
     private String note;
 
     private Integer lastLogin;
@@ -22,9 +25,11 @@ public class WallAdmin implements Serializable {
     private Integer signupTime;
 
     // 帐号启用状态：0->禁用；1->启用
+    @ApiModelProperty(value = "帐号启用状态：0->禁用；1->启用")
     private Boolean status;
 
     // 是否在线
+    @ApiModelProperty(value = "是否在线")
     private Boolean isOnline;
 
     private static final long serialVersionUID = 1L;

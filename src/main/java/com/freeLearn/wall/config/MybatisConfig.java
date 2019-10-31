@@ -48,7 +48,7 @@ public class MybatisConfig {
     }
 
     @Bean
-    private PageInterceptor pageInterceptor(){
+    PageInterceptor pageInterceptor(){
         PageInterceptor pageInterceptor = new PageInterceptor();
         Properties properties = new Properties();
         properties.setProperty("helperDialect", "mysql");

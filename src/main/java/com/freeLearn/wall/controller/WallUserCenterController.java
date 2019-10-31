@@ -8,6 +8,8 @@ import com.freeLearn.wall.model.Posting;
 import com.freeLearn.wall.model.WallUser;
 import com.freeLearn.wall.service.PostingService;
 import com.freeLearn.wall.service.WallUserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Api(tags = "WallUserCenterController", description = "用户中心")
 @RestController
 @RequestMapping("/userCenter")
 public class WallUserCenterController {
@@ -25,6 +28,7 @@ public class WallUserCenterController {
     @Autowired
     private WallUserService wallUserService;
 
+    @ApiOperation("获取登录用户发布的帖子")
     @RequestMapping(value = "/posting", method = RequestMethod.GET)
     CommonResult releasedPostings(@RequestParam(defaultValue = "1") Integer pageNum,
                                   @RequestParam(defaultValue = "10") Integer pageSize){
@@ -39,6 +43,7 @@ public class WallUserCenterController {
         return CommonResult.success(CommonPage.restPage(postingBriefList));
     }
 
+    @ApiOperation("删除帖子")
     @RequestMapping(value = "/posting", method = RequestMethod.DELETE)
     CommonResult deletePosting(@RequestParam Integer postingId){
         WallUser user = wallUserService.getCurrentUser();
@@ -56,6 +61,7 @@ public class WallUserCenterController {
 
     }
 
+    @ApiOperation("修改帖子")
     @RequestMapping(value = "/posting", method = RequestMethod.PUT)
     CommonResult modifyPosting(@RequestParam Integer postingId,
                                @RequestParam String detailedIntroduction,
@@ -74,6 +80,7 @@ public class WallUserCenterController {
         return postingService.updatePosting(posting.getId(), detailedIntroduction, pictureIntroduction);
     }
 
+    @ApiOperation("发布帖子")
     @RequestMapping(value = "/posting", method = RequestMethod.POST)
     CommonResult release(@RequestParam PostingParam postingParam){
         WallUser user = wallUserService.getCurrentUser();

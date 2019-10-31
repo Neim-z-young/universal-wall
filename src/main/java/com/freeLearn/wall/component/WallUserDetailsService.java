@@ -1,9 +1,12 @@
 package com.freeLearn.wall.component;
 
 import com.freeLearn.wall.domain.WallAdminDetails;
+import com.freeLearn.wall.domain.WallUserDetails;
 import com.freeLearn.wall.model.Permission;
 import com.freeLearn.wall.model.WallAdmin;
+import com.freeLearn.wall.model.WallUser;
 import com.freeLearn.wall.service.WallAdminService;
+import com.freeLearn.wall.service.WallUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,20 +16,23 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
-public class AdminDetailsServiceImpl implements UserDetailsService {
+public class WallUserDetailsService implements UserDetailsService {
 
     @Autowired
-    WallAdminService wallAdminService;
+    WallUserService wallUserService;
 
+
+    /**
+     * @param username
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails userDetails = null;
-        WallAdmin wallAdmin = wallAdminService.getByUsername(username);
-        if(wallAdmin!=null){
-            //TODO 权限
-            List<Permission> permissionList = wallAdminService.getPermissionList(wallAdmin.getId());
-            userDetails = new WallAdminDetails(wallAdmin, permissionList);
+        WallUser wallUser = wallUserService.getByUsername(username);
+        if (wallUser != null) {
+            userDetails = new WallUserDetails(wallUser);
             return userDetails;
         }
         throw new UsernameNotFoundException("用户名或密码错误");
