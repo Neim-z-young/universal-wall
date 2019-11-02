@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() throws Exception {
         JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter();
-        //TODO 这样设置能保证Bean调用正确吗
+        //spring会拦截@Bean方法的调用
         jwtAuthenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
         //TODO set auth success/failed handler
 
@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public WallAdminAuthenticationProvider wallAdminAuthenticationProvider(){
         WallAdminAuthenticationProvider wallAdminAuthenticationProvider = new WallAdminAuthenticationProvider();
-        //TODO 这样设置能保证Bean调用正确吗
+        //spring会拦截@Bean方法的调用
         wallAdminAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         wallAdminAuthenticationProvider.setUserDetailsService(adminDetailsService());
         wallAdminAuthenticationProvider.setROLE_ADMIN_PREFIX(ROLE_ADMIN_PREFIX);
@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public WallUserAuthenticationProvider wallUserAuthenticationProvider(){
         WallUserAuthenticationProvider wallUserAuthenticationProvider = new WallUserAuthenticationProvider();
-        //TODO 这样设置能保证Bean调用正确吗
+        //spring会拦截@Bean方法的调用
         wallUserAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         wallUserAuthenticationProvider.setROLE_USER_PREFIX(ROLE_USER_PREFIX);
         wallUserAuthenticationProvider.setUserDetailsService(userDetailsService());
@@ -100,7 +100,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
                     .permitAll()
                 .anyRequest()
-                    .permitAll();
+                    .permitAll()
+                .and()
+                .requiresChannel()  //增加https
+                    .antMatchers("/**")
+                        .requiresSecure();
 
         http.csrf().disable();
 

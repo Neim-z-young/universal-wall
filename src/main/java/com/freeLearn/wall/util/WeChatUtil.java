@@ -45,7 +45,9 @@ public class WeChatUtil {
         //TODO write log
         System.out.println(response);
         JSONObject jsonObject = JSONUtil.parseObj(response);
-        openId = jsonObject.get("openid").toString();
+        if(jsonObject.containsKey("openid")){
+            openId = jsonObject.get("openid").toString();
+        }
         return openId;
     }
 

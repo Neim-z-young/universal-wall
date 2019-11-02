@@ -12,11 +12,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Api(tags = "WallUserCenterController", description = "用户中心")
@@ -82,7 +81,7 @@ public class WallUserCenterController {
 
     @ApiOperation("发布帖子")
     @RequestMapping(value = "/posting", method = RequestMethod.POST)
-    CommonResult release(@RequestParam PostingParam postingParam){
+    CommonResult release(@Valid @RequestBody PostingParam postingParam, BindingResult bindingResult){
         WallUser user = wallUserService.getCurrentUser();
         if(user==null){
             return CommonResult.unauthorized("未登录");

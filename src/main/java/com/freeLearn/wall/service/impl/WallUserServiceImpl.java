@@ -127,6 +127,9 @@ public class WallUserServiceImpl implements WallUserService {
         BeanUtils.copyProperties(wallUserParam, wallUser);
         String encodedPass = passwordEncoder.encode(wallUser.getPassword());
         wallUser.setPassword(encodedPass);
+        if(wallUser.getGender()==null){
+            wallUser.setGender(0);
+        }
         wallUser.setSignupTime(dateUtil.getEpochFromDate(new Date()));
         wallUser.setStatus(true);
         wallUser.setPoints(0);

@@ -23,7 +23,7 @@ public class PostingParam {
     @ApiModelProperty(value = "图片")
     String pictureIntroduction;
 
-    @ApiModelProperty(value = "类别id")
+    @ApiModelProperty(value = "类别id", required = true)
     @NotEmpty(message = "分类不能为空")
     Integer cateId;
 }
