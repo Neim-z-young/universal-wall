@@ -26,3 +26,5 @@
 
 /bin/
 .gradle
+
+/src/main/resources/*.properties
