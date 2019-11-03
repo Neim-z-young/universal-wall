@@ -36,11 +36,13 @@ public class WallUserController {
     @ApiOperation("微信code登录")
     @RequestMapping(value = "/weChat/login", method = RequestMethod.POST)
     public CommonResult weChatLogin(@RequestBody String code){
-        String openId = weChatUtil.generateOpenId(code);
-        if(openId==null){
-            return CommonResult.validateFailed("认证错误");
+        //String openId = weChatUtil.generateOpenId(code);
+        WeChatUtil.ResObject resObject = weChatUtil.generateResObject(code);
+        if(resObject.getOpenid()==null){
+            //请求得到openId失败，返回错误对象
+            return CommonResult.unauthorized(resObject);
         }
-        String token =  wallUserService.loginWeChat(openId);
+        String token =  wallUserService.loginWeChat(resObject.getOpenid());
         if(token==null){
             return CommonResult.validateFailed("认证失败");
         }

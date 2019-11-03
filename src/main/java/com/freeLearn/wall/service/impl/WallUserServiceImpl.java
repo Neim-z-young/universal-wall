@@ -40,7 +40,7 @@ import java.util.List;
  */
 @Service
 public class WallUserServiceImpl implements WallUserService {
-    @Value("${jwt.userRole")
+    @Value("${jwt.userRole}")
     private String ROLE_USER;
 
     @Autowired
@@ -154,7 +154,7 @@ public class WallUserServiceImpl implements WallUserService {
         newUser.setPoints(0);
         newUser.setGrowth(0);
         newUser.setUsername("wechat"+openId);
-        newUser.setPassword(passwordUtil.generateRandomPassword(15));
+        newUser.setPassword(passwordEncoder.encode(passwordUtil.generateRandomPassword(15)));
         if(username!=null){
            newUser.setUsername(username);
         }

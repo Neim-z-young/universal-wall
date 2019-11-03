@@ -28,10 +28,10 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Value("${jwt.tokenHeader")
+    @Value("${jwt.tokenHeader}")
     private String tokenHeader;
 
-    @Value("${jwt.tokenHead")
+    @Value("${jwt.tokenHead}")
     private String tokenHead;
 
     //TODO 配置路径
