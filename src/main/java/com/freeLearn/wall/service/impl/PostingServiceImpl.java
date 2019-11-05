@@ -9,6 +9,7 @@ import com.freeLearn.wall.mapper.PostingMapper;
 import com.freeLearn.wall.model.Posting;
 import com.freeLearn.wall.service.PostingService;
 import com.freeLearn.wall.util.DateUtil;
+import com.freeLearn.wall.util.StringUtil;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class PostingServiceImpl implements PostingService {
 
     @Autowired
     private DateUtil dateUtil;
+
+    @Autowired
+    private StringUtil stringUtil;
 
     @Override
     public CommonResult listAll() {
@@ -102,11 +106,11 @@ public class PostingServiceImpl implements PostingService {
         Posting posting = new Posting();
         BeanUtils.copyProperties(postingParam, posting);
         posting.setPosterId(posterId);
-        posting.setBriefIntroduction(posting.getDetailedIntroduction().substring(0, 20));
+        posting.setBriefIntroduction(stringUtil.cutStringHead(posting.getDetailedIntroduction(), 20));
         posting.setReleaseTime(dateUtil.getEpochFromDate(new Date()));
         int res = postingMapper.insert(posting);
         if(res>0){
-            CommonResult.success(null, "发帖成功");
+            return CommonResult.success(null, "发帖成功");
         }
         return CommonResult.failed("发帖失败");
     }
@@ -118,7 +122,7 @@ public class PostingServiceImpl implements PostingService {
             return CommonResult.failed("帖子不存在");
         }
         if(detailedIntroduction!=null){
-            posting.setBriefIntroduction(detailedIntroduction.substring(0, 20));
+            posting.setBriefIntroduction(stringUtil.cutStringHead(detailedIntroduction, 20));
             posting.setDetailedIntroduction(detailedIntroduction);
         }
         posting.setPictureIntroduction(pictureIntroduction);

@@ -24,5 +24,5 @@ public class PostingParam {
     String pictureIntroduction;
 
     @ApiModelProperty(value = "类别id", required = true)
-    Integer cateId;
+    Integer categoryId;
 }
