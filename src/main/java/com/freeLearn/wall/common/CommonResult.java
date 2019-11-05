@@ -65,7 +65,7 @@ public class CommonResult<T> {
      * 参数验证失败返回结果
      */
     public static <T> CommonResult<T> validateFailed() {
-        return failed(ResultCode.VALIDATE_FAILED);
+        return failed(ResultCode.NOT_FOUND);
     }
 
     /**
@@ -73,7 +73,26 @@ public class CommonResult<T> {
      * @param message 提示信息
      */
     public static <T> CommonResult<T> validateFailed(String message) {
-        return new CommonResult<T>(ResultCode.VALIDATE_FAILED.getCode(), message, null);
+        return new CommonResult<T>(ResultCode.NOT_FOUND.getCode(), message, null);
+    }
+
+    /**
+     * 资源未找到
+     * @param message
+     * @param <T>
+     * @return
+     */
+    public static <T> CommonResult<T> notFound(String message){
+        return new CommonResult<>(ResultCode.NOT_FOUND.getCode(), message, null);
+    }
+
+    /**
+     * 对象未找到
+     * @param <T>
+     * @return
+     */
+    public static <T> CommonResult<T> notFound(){
+        return new CommonResult<>(ResultCode.NOT_FOUND.getCode(), ResultCode.NOT_FOUND.getMessage(), null);
     }
 
     /**

@@ -29,7 +29,7 @@ public class PostingController {
                                         @RequestParam(defaultValue = "10") Integer pageSize){
         List<PostingBrief> postingBriefList = postingService.listPage(pageNum, pageSize);
         if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
+            return CommonResult.notFound("无可查看的帖子");
         }
         return CommonResult.success(CommonPage.restPage(postingBriefList), "帖子查询成功");
     }
@@ -40,7 +40,7 @@ public class PostingController {
                                         @RequestParam(defaultValue = "10") Integer pageSize){
         List<PostingBrief> postingBriefList = postingService.listLimit(offset, pageSize);
         if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
+            return CommonResult.notFound("无可查看的帖子");
         }
         return CommonResult.success(CommonPage.restPage(postingBriefList), "帖子查询成功");
     }
@@ -52,7 +52,7 @@ public class PostingController {
                                                 @RequestParam(defaultValue = "10") Integer pageSize){
         List<PostingBrief> postingBriefList = postingService.listPageByCateId(cateId, pageNum, pageSize);
         if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("无可查看的帖子");
+            return CommonResult.notFound("无可查看的帖子");
         }
         return CommonResult.success(CommonPage.restPage(postingBriefList), "帖子查询成功");
     }

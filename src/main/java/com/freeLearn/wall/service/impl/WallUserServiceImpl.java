@@ -182,6 +182,8 @@ public class WallUserServiceImpl implements WallUserService {
         Authentication authentication = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
+        System.out.println(authentication);
+        System.out.println(authentication.getPrincipal());
         if(authentication!=null && authentication.getPrincipal()!=null){
             UserDetails userDetails = (UserDetails)authentication.getPrincipal();
             if(userDetails instanceof WallUserDetails){

@@ -149,7 +149,7 @@ public class JwtUtil {
     public boolean isTokenExpired(String token){
         Date exp = getExpiredDateFromToken(token);
         assert exp!=null; //断言token格式是正确的
-        return !exp.before(new Date());
+        return exp.before(new Date());
     }
 
     /**

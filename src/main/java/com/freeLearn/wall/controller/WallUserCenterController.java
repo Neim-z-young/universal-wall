@@ -37,7 +37,7 @@ public class WallUserCenterController {
         }
         List<PostingBrief> postingBriefList = postingService.listPageByPosterId(user.getId(), pageNum, pageSize);
         if(CollectionUtils.isEmpty(postingBriefList)){
-            return CommonResult.failed("未发布任何帖子");
+            return CommonResult.notFound("未发布任何帖子");
         }
         return CommonResult.success(CommonPage.restPage(postingBriefList));
     }
@@ -51,7 +51,7 @@ public class WallUserCenterController {
         }
         Posting posting = postingService.getById(postingId);
         if(posting==null){
-            return CommonResult.failed("并无此帖子");
+            return CommonResult.notFound("并无此帖子");
         }
         if(!posting.getPosterId().equals(user.getId())){
             return CommonResult.unauthorized("不是帖子的所有者");
@@ -71,7 +71,7 @@ public class WallUserCenterController {
         }
         Posting posting = postingService.getById(postingId);
         if(posting==null){
-            return CommonResult.failed("并无此帖子");
+            return CommonResult.notFound("并无此帖子");
         }
         if(!posting.getPosterId().equals(user.getId())){
             return CommonResult.unauthorized("不是帖子的所有者");

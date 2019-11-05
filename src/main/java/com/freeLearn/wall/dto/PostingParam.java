@@ -24,6 +24,5 @@ public class PostingParam {
     String pictureIntroduction;
 
     @ApiModelProperty(value = "类别id", required = true)
-    @NotEmpty(message = "分类不能为空")
     Integer cateId;
 }

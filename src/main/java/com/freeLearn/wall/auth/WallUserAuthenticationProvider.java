@@ -4,12 +4,14 @@ import com.freeLearn.wall.domain.WallUserDetails;
 import com.freeLearn.wall.util.JwtUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
@@ -35,7 +37,11 @@ public class WallUserAuthenticationProvider extends AbstractUserDetailsAuthentic
         if(role.equals(ROLE_USER_PREFIX)){
             userDetails = userDetailsService.loadUserByUsername(username);
         }
-        return userDetails;
+        assert userDetails!=null;
+        if(userDetails!=null){
+            return userDetails;
+        }
+        throw new UsernameNotFoundException("身份认证错误");
     }
 
     /**
