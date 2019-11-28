@@ -52,7 +52,7 @@ public class MybatisConfig {
         PageInterceptor pageInterceptor = new PageInterceptor();
         Properties properties = new Properties();
         properties.setProperty("helperDialect", "mysql");
-        properties.setProperty("reasonable", "true");
+        properties.setProperty("reasonable", "false");
         pageInterceptor.setProperties(properties);
         return pageInterceptor;
     }

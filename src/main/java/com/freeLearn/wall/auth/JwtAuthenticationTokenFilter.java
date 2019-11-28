@@ -4,6 +4,8 @@ package com.freeLearn.wall.auth;
 import com.freeLearn.wall.util.JwtUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AccountExpiredException;
@@ -36,6 +38,8 @@ import java.io.IOException;
  * Create by oyoungy on 2019/10/25
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+    protected static final Logger LOGGER = LogManager.getLogger();
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -50,7 +54,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Setter
     private AuthenticationManager authenticationManager;
 
-    //TODO 配置路径
     public JwtAuthenticationTokenFilter() {
 
     }
@@ -61,21 +64,20 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader(this.tokenHeader);
         Authentication authentication = null;
-        System.out.println(authHeader);
+        LOGGER.debug("AuthHeader: " + authHeader);
         if (authHeader != null && authHeader.startsWith(this.tokenHead)) {
             String token = authHeader.substring(this.tokenHead.length() + 1); //authHeader = tokenHead + " " + token
             if (!jwtUtil.isTokenExpired(token)) {
                 String username = jwtUtil.getUsernameFromToken(token);
                 String role = jwtUtil.getRoleFromToken(token);
-                System.out.println("TOKEN: " + token + "  " + username + "  " + role);
+                LOGGER.debug("TOKEN: " + token + " username: " + username + " role: " + role);
                 authentication = new UsernamePasswordAuthenticationToken(username, role);
                 try{
                     //交给authenticationProvider代理类进行授权
                     authentication = this.getAuthenticationManager().authenticate(authentication);
                     processTokenAuthentication(authentication);
                 }catch (AuthenticationException e){
-                    //TODO log
-                    e.printStackTrace();
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         }

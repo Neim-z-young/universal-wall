@@ -59,7 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter();
         //spring会拦截@Bean方法的调用
         jwtAuthenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
-        //TODO set auth success/failed handler
 
         return jwtAuthenticationTokenFilter;
     }
@@ -89,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return wallUserAuthenticationProvider;
     }
 
-    //配置Spring Security 的Filter链
+    //可配置不通过 Web Security 的拦截过滤的url
     @Override
     public void configure(WebSecurity web) throws Exception {
         //忽略对以下资源的拦截及过滤
@@ -149,7 +148,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // 禁用缓存（不使用session，故基本用不上缓存）
         http.headers().cacheControl();
-        //避免因认证过滤器跳过其后的所有过滤器，导致jwt Filter失效
+
         http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         //添加自定义未授权和未登录的返回结果
         http.exceptionHandling()

@@ -5,6 +5,8 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,7 @@ import java.net.URL;
  */
 @Component
 public class WeChatUtil {
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * 微信登录请求返回对象
@@ -50,8 +53,7 @@ public class WeChatUtil {
         String url =  "https://api.weixin.qq.com/sns/jscode2session?appid=" + WECHAT_APPID + "&secret="
                 + WECHAT_SECRET + "&js_code=" + code + "&grant_type=authorization_code";
         String response = httpRequest(url, "GET", null);
-        //TODO write log
-        System.out.println(response);
+        LOGGER.debug(response);
         JSONObject jsonObject = JSONUtil.parseObj(response);
         if(jsonObject.containsKey("openid")){
             openId = jsonObject.get("openid").toString();
@@ -68,8 +70,7 @@ public class WeChatUtil {
         String url =  "https://api.weixin.qq.com/sns/jscode2session?appid=" + WECHAT_APPID + "&secret="
                 + WECHAT_SECRET + "&js_code=" + code + "&grant_type=authorization_code";
         String response = httpRequest(url, "GET", null);
-        //TODO write log
-        System.out.println(response);
+        LOGGER.debug(response);
         ResObject object;
         try {
             object= JSONUtil.toBean(response, ResObject.class);

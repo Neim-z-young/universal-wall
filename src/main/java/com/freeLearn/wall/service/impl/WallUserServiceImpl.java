@@ -14,6 +14,8 @@ import com.freeLearn.wall.util.DateUtil;
 import com.freeLearn.wall.util.IPAddressUtil;
 import com.freeLearn.wall.util.JwtUtil;
 import com.freeLearn.wall.util.PasswordUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,6 +43,8 @@ import java.util.List;
  */
 @Service
 public class WallUserServiceImpl implements WallUserService {
+    protected static final Logger LOGGER = LogManager.getLogger();
+
     @Value("${jwt.userRole}")
     private String ROLE_USER;
 
@@ -144,7 +149,8 @@ public class WallUserServiceImpl implements WallUserService {
     public WallUser registerWeChat(String openId, String username) {
         WallUser newUser = getByOpenId(openId);
         if(newUser!=null){
-            return newUser;
+            LOGGER.warn("Incorrect user register service calling");
+            return null;
         }
         newUser = new WallUser();
         newUser.setOpenId(openId);
@@ -182,14 +188,16 @@ public class WallUserServiceImpl implements WallUserService {
         Authentication authentication = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
-        System.out.println(authentication);
-        System.out.println(authentication.getPrincipal());
+//        System.out.println(authentication);
+//        System.out.println(authentication.getPrincipal());
         if(authentication!=null && authentication.getPrincipal()!=null){
             UserDetails userDetails = (UserDetails)authentication.getPrincipal();
             if(userDetails instanceof WallUserDetails){
                 return ((WallUserDetails) userDetails).getUser();
             }
+            LOGGER.warn("Incorrect user Service calling");
         }
+        LOGGER.debug("Do not logged in");
         return null;
     }
 
@@ -235,9 +243,11 @@ public class WallUserServiceImpl implements WallUserService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtUtil.generateToken(userDetails, ROLE_USER);
             insertLoginLog(((WallUserDetails)userDetails).getUser().getId());
-        }catch (AuthenticationException e){
+        } catch (BadCredentialsException | UsernameNotFoundException e){
+            LOGGER.debug(e.getMessage());
+        } catch (AuthenticationException e){
             //登录异常
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
         }
         return token;
     }
@@ -261,7 +271,7 @@ public class WallUserServiceImpl implements WallUserService {
             insertLoginLog(((WallUserDetails)userDetails).getUser().getId());
         }catch (AuthenticationException e){
             //登录异常
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
         }
         return token;
     }
@@ -276,6 +286,7 @@ public class WallUserServiceImpl implements WallUserService {
         wallUserLoginLog.setUserId(userId);
         wallUserLoginLog.setCreateTime(dateUtil.getEpochFromDate(new Date()));
         wallUserLoginLog.setIpAddress(ipAddressUtil.ipString2Long(ipAddress));
+        LOGGER.debug("User from ip: "+ipAddress+" logged in");
         return wallUserLoginLogMapper.insert(wallUserLoginLog);
     }
 }

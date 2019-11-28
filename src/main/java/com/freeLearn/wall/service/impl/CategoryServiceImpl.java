@@ -7,14 +7,17 @@ import com.freeLearn.wall.model.CategoryExample;
 import com.freeLearn.wall.service.CategoryService;
 import com.freeLearn.wall.util.DateUtil;
 import com.github.pagehelper.PageHelper;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    protected static final Logger LOGGER = LogManager.getLogger();
     @Autowired
     private CategoryMapper categoryMapper;
 
@@ -61,6 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
         newCate.setIntroduction(intro);
         newCate.setCreateTime(dateUtil.getEpochFromDate(new Date()));
         categoryMapper.insert(newCate);
+        LOGGER.info("New category: [" + category + "] added");
         return CommonResult.success(null, "新类别："+category+" 添加成功");
     }
 
@@ -70,6 +74,8 @@ public class CategoryServiceImpl implements CategoryService {
         if(cate==null){
             return CommonResult.failed("无所选类别");
         }
+        LOGGER.info("Update category: [" + cate.getCategory() + " : " + cate.getIntroduction()  + "] to: "
+                + "[" + category + " : " + intro + "]");
         cate.setCategory(category);
         cate.setIntroduction(intro);
         categoryMapper.updateByPrimaryKeySelective(cate);
@@ -80,6 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CommonResult deleteCate(Integer cateId) {
         int res = categoryMapper.deleteByPrimaryKey(cateId);
         if(res>0){
+            LOGGER.info("Delete category, whose id is: " + cateId.toString());
             return CommonResult.success(null, "删除类别成功");
         }
         return CommonResult.failed("删除失败");

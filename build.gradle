@@ -51,9 +51,14 @@ dependencies {
     compile "javax.activation:activation:$activationVersion"
 
     compile "org.slf4j:slf4j-api:$slf4jVersion"
-    compile "org.slf4j:jcl-over-slf4j:$slf4jVersion"
-    compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
-    compile "log4j:log4j:$log4jVersion"
+//    compile "org.slf4j:jcl-over-slf4j:$slf4jVersion"
+//    compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+//    compile "log4j:log4j:$log4jVersion"
+    compile "org.apache.logging.log4j:log4j-api:$log4j2Version"
+    compile "org.apache.logging.log4j:log4j-core:$log4j2Version"
+    compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4j2Version"
+    compile "org.apache.logging.log4j:log4j-jcl:$log4j2Version"
+    compile "org.apache.logging.log4j:log4j-jul:$log4j2Version"
 
     //lombok (gradle 4.7 后,lombok依赖导入已发生改变)
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
