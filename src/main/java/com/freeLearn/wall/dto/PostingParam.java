@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 帖子发布参数
  * Created by oyoungy on 2019/10/29.
@@ -24,5 +26,6 @@ public class PostingParam {
     String pictureIntroduction;
 
     @ApiModelProperty(value = "类别id", required = true)
+    @NotNull(message = "类别不能为空")
     Integer categoryId;
 }

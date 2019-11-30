@@ -10,6 +10,8 @@ import com.freeLearn.wall.service.PostingService;
 import com.freeLearn.wall.service.WallUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -22,6 +24,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/userCenter")
 public class WallUserCenterController {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @Autowired
     private PostingService postingService;
     @Autowired
@@ -82,10 +86,26 @@ public class WallUserCenterController {
     @ApiOperation("发布帖子")
     @RequestMapping(value = "/posting", method = RequestMethod.POST)
     CommonResult release(@Valid @RequestBody PostingParam postingParam, BindingResult bindingResult){
+        //通过前端校验参数异常
+        if(bindingResult.hasErrors()){
+            LOGGER.debug("参数验证错误：" + bindingResult);
+        }
         WallUser user = wallUserService.getCurrentUser();
         if(user==null){
             return CommonResult.unauthorized("未登录");
         }
         return postingService.addNewPosting(user.getId(), postingParam);
+    }
+
+    @ApiOperation("获取消息列表")
+    @RequestMapping(value = "/message", method = RequestMethod.GET)
+    public CommonResult getMessages(@RequestParam(defaultValue = "1") Integer pageNum,
+                            @RequestParam(defaultValue = "10") Integer pageSize){
+        return null;
+    }
+    @ApiOperation("获取用户统计信息")
+    @RequestMapping(value = "/statistic", method = RequestMethod.GET)
+    public CommonResult getStatistics(){
+        return null;
     }
 }

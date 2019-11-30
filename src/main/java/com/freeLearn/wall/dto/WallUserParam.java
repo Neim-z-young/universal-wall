@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 用户登录参数
  * Created by oyoungy on 2019/10/29.
@@ -29,6 +31,7 @@ public class WallUserParam {
     private String nickName;
 
     @ApiModelProperty(value = "性别 0->未知,1->男,2->女")
+    @NotNull(message = "性别不能为空")
     private Integer gender;
 
     @ApiModelProperty(value = "备注")

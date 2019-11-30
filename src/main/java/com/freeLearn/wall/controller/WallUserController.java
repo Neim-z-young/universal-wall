@@ -7,6 +7,8 @@ import com.freeLearn.wall.service.WallUserService;
 import com.freeLearn.wall.util.WeChatUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
@@ -20,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class WallUserController {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     //TODO
     @Autowired
@@ -55,12 +58,20 @@ public class WallUserController {
     @ApiOperation("用户注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public CommonResult register(@Valid @RequestBody WallUserParam wallUserParam, BindingResult bindingResult){
+        //通过前端校验参数异常
+        if(bindingResult.hasErrors()){
+            LOGGER.debug("参数验证错误");
+        }
         return wallUserService.register(wallUserParam);
     }
 
     @ApiOperation("用户登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public CommonResult login(@Valid @RequestBody WallUserLoginParam loginParam, BindingResult bindingResult){
+        //通过前端校验参数异常
+        if(bindingResult.hasErrors()){
+            LOGGER.debug("参数验证错误");
+        }
         String token = wallUserService.login(loginParam.getUsername(), loginParam.getPassword());
         if(token==null){
             return CommonResult.validateFailed("用户名或密码错误");
