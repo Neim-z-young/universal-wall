@@ -17,6 +17,5 @@ import java.util.List;
 @Setter
 public class PostingDetails {
     private Posting posting;
-    private List<Floor> floorList;
-    private List<InsideFloor> insideFloorList;
+    private List<FloorDetails> floorListDetails;
 }
