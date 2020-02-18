@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface PostingMapper {
-    int countByExample(PostingExample example);
+    long countByExample(PostingExample example);
 
     int deleteByExample(PostingExample example);
 

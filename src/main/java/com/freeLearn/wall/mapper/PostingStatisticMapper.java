@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface PostingStatisticMapper {
-    int countByExample(PostingStatisticExample example);
+    long countByExample(PostingStatisticExample example);
 
     int deleteByExample(PostingStatisticExample example);
 

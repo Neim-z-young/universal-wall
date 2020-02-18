@@ -13,7 +13,7 @@
     <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
     <!-- 为生成的Java模型创建一个toString方法 -->
     <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
-    <!--覆盖生成XML文件-->
+    <!--覆盖生成XML文件  1.3.3版本不含此插件-->
     <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
     <commentGenerator type="com.freeLearn.wall.util.CommentGenerator">
       <!-- 是否去除自动生成的注释 true：是 ： false:否 -->

@@ -8,7 +8,7 @@ public class InsideFloor implements Serializable {
 
     // 楼层id
     @ApiModelProperty(value = "楼层id")
-    private Integer floorsId;
+    private Integer floorId;
 
     private Integer replyTime;
 
@@ -28,12 +28,12 @@ public class InsideFloor implements Serializable {
         this.id = id;
     }
 
-    public Integer getFloorsId() {
-        return floorsId;
+    public Integer getFloorId() {
+        return floorId;
     }
 
-    public void setFloorsId(Integer floorsId) {
-        this.floorsId = floorsId;
+    public void setFloorId(Integer floorId) {
+        this.floorId = floorId;
     }
 
     public Integer getReplyTime() {
@@ -75,7 +75,7 @@ public class InsideFloor implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", floorsId=").append(floorsId);
+        sb.append(", floorId=").append(floorId);
         sb.append(", replyTime=").append(replyTime);
         sb.append(", comment=").append(comment);
         sb.append(", userId=").append(userId);

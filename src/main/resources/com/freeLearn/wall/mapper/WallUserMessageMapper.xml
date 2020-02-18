@@ -126,7 +126,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.freeLearn.wall.model.WallUserMessageExample" resultType="java.lang.Integer">
+  <select id="countByExample" parameterType="com.freeLearn.wall.model.WallUserMessageExample" resultType="java.lang.Long">
     select count(*) from wall_user_message
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

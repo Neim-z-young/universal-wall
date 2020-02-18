@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface WallUserStatisticMapper {
-    int countByExample(WallUserStatisticExample example);
+    long countByExample(WallUserStatisticExample example);
 
     int deleteByExample(WallUserStatisticExample example);
 

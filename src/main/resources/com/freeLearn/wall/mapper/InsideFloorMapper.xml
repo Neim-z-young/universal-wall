@@ -3,7 +3,7 @@
 <mapper namespace="com.freeLearn.wall.mapper.InsideFloorMapper">
   <resultMap id="BaseResultMap" type="com.freeLearn.wall.model.InsideFloor">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="floors_id" jdbcType="INTEGER" property="floorsId" />
+    <result column="floor_id" jdbcType="INTEGER" property="floorId" />
     <result column="reply_time" jdbcType="INTEGER" property="replyTime" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
@@ -68,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, floors_id, reply_time, comment, user_id, is_read
+    id, floor_id, reply_time, comment, user_id, is_read
   </sql>
   <select id="selectByExample" parameterType="com.freeLearn.wall.model.InsideFloorExample" resultMap="BaseResultMap">
     select
@@ -104,9 +104,9 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into inside_floor (floors_id, reply_time, comment, 
+    insert into inside_floor (floor_id, reply_time, comment, 
       user_id, is_read)
-    values (#{floorsId,jdbcType=INTEGER}, #{replyTime,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR}, 
+    values (#{floorId,jdbcType=INTEGER}, #{replyTime,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR}, 
       #{userId,jdbcType=INTEGER}, #{isRead,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.freeLearn.wall.model.InsideFloor">
@@ -115,8 +115,8 @@
     </selectKey>
     insert into inside_floor
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="floorsId != null">
-        floors_id,
+      <if test="floorId != null">
+        floor_id,
       </if>
       <if test="replyTime != null">
         reply_time,
@@ -132,8 +132,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="floorsId != null">
-        #{floorsId,jdbcType=INTEGER},
+      <if test="floorId != null">
+        #{floorId,jdbcType=INTEGER},
       </if>
       <if test="replyTime != null">
         #{replyTime,jdbcType=INTEGER},
@@ -149,7 +149,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.freeLearn.wall.model.InsideFloorExample" resultType="java.lang.Integer">
+  <select id="countByExample" parameterType="com.freeLearn.wall.model.InsideFloorExample" resultType="java.lang.Long">
     select count(*) from inside_floor
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -161,8 +161,8 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.floorsId != null">
-        floors_id = #{record.floorsId,jdbcType=INTEGER},
+      <if test="record.floorId != null">
+        floor_id = #{record.floorId,jdbcType=INTEGER},
       </if>
       <if test="record.replyTime != null">
         reply_time = #{record.replyTime,jdbcType=INTEGER},
@@ -184,7 +184,7 @@
   <update id="updateByExample" parameterType="map">
     update inside_floor
     set id = #{record.id,jdbcType=INTEGER},
-      floors_id = #{record.floorsId,jdbcType=INTEGER},
+      floor_id = #{record.floorId,jdbcType=INTEGER},
       reply_time = #{record.replyTime,jdbcType=INTEGER},
       comment = #{record.comment,jdbcType=VARCHAR},
       user_id = #{record.userId,jdbcType=INTEGER},
@@ -196,8 +196,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.freeLearn.wall.model.InsideFloor">
     update inside_floor
     <set>
-      <if test="floorsId != null">
-        floors_id = #{floorsId,jdbcType=INTEGER},
+      <if test="floorId != null">
+        floor_id = #{floorId,jdbcType=INTEGER},
       </if>
       <if test="replyTime != null">
         reply_time = #{replyTime,jdbcType=INTEGER},
@@ -216,7 +216,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.freeLearn.wall.model.InsideFloor">
     update inside_floor
-    set floors_id = #{floorsId,jdbcType=INTEGER},
+    set floor_id = #{floorId,jdbcType=INTEGER},
       reply_time = #{replyTime,jdbcType=INTEGER},
       comment = #{comment,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=INTEGER},

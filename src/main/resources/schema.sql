@@ -110,7 +110,7 @@ CREATE TABLE `floor`(
 DROP TABLE if EXISTS `inside_floor`;
 CREATE table `inside_floor`(
 	`id` int not NULL auto_increment,
-	`floors_id` int COMMENT"楼层id",
+	`floor_id` int COMMENT"楼层id",
 	`reply_time` int,
 	`comment` varchar(200),
 	`user_id` int,

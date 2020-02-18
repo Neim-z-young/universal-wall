@@ -16,5 +16,5 @@ public class FloorDetails {
     private Integer replyTime;
     private String comment;
     private Integer userId;
-    private List<InsideFloorDetails> insideFloorListDetail;
+    private List<InsideFloorDetails> insideFloorDetailList;
 }

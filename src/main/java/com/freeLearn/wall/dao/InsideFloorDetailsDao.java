@@ -5,7 +5,6 @@ import com.freeLearn.wall.domain.InsideFloorDetails;
 import java.util.List;
 
 public interface InsideFloorDetailsDao {
-    InsideFloorDetails getById(Integer insideFloorId);
-    List<InsideFloorDetails> getByFloorId(Integer floorId);
-    List<InsideFloorDetails> getByFloorId(Integer floorId, Integer pageNum, Integer pageSize);
+    InsideFloorDetails selectByPrimaryKey(Integer insideFloorId);
+    List<InsideFloorDetails> selectByFloorId(Integer floorId);
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface FloorMapper {
-    int countByExample(FloorExample example);
+    long countByExample(FloorExample example);
 
     int deleteByExample(FloorExample example);
 

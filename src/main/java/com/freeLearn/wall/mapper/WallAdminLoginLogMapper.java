@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface WallAdminLoginLogMapper {
-    int countByExample(WallAdminLoginLogExample example);
+    long countByExample(WallAdminLoginLogExample example);
 
     int deleteByExample(WallAdminLoginLogExample example);
 
