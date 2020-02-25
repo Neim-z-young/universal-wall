@@ -1,7 +1,9 @@
 package com.freeLearn.wall.service.impl;
 
 import com.freeLearn.wall.common.CommonResult;
+import com.freeLearn.wall.dao.FloorBriefDao;
 import com.freeLearn.wall.dao.FloorDetailsDao;
+import com.freeLearn.wall.domain.FloorBrief;
 import com.freeLearn.wall.domain.FloorDetails;
 import com.freeLearn.wall.dto.FloorParam;
 import com.freeLearn.wall.mapper.FloorMapper;
@@ -16,11 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Date;
+import java.util.List;
 
 public class FloorServiceImpl implements FloorService {
 
     @Autowired
     private FloorDetailsDao floorDetailsDao;
+
+    @Autowired
+    private FloorBriefDao floorBriefDao;
 
     @Autowired
     private PostingMapper postingMapper;
@@ -32,12 +38,37 @@ public class FloorServiceImpl implements FloorService {
     private DateUtil dateUtil;
 
     @Override
+    public Floor getById(Integer id) {
+        return floorMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public CommonResult deleteById(Integer id) {
+        int res = floorMapper.deleteByPrimaryKey(id);
+        if(res>0){
+            return CommonResult.success(null, "删除成功");
+        }
+        return CommonResult.failed("删除失败");
+    }
+
+    @Override
+    public List<FloorBrief> listAllByPostingId(Integer postingId) {
+        return floorBriefDao.selectByPostingId(postingId);
+    }
+
+    @Override
+    public List<FloorBrief> listPageNumByPostingId(Integer postingId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        return listAllByPostingId(postingId);
+    }
+
+    @Override
     public FloorDetails listAllReply(Integer floorId) {
         return floorDetailsDao.selectByPrimaryKey(floorId);
     }
 
     @Override
-    public FloorDetails listPagedReply(Integer floorId, Integer pageNum, Integer pageSize) {
+    public FloorDetails listPageNumReply(Integer floorId, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         return listAllReply(floorId);
     }

@@ -3,6 +3,7 @@ package com.freeLearn.wall.controller;
 import com.freeLearn.wall.common.CommonPage;
 import com.freeLearn.wall.common.CommonResult;
 import com.freeLearn.wall.domain.PostingBrief;
+import com.freeLearn.wall.domain.PostingDetails;
 import com.freeLearn.wall.dto.PostingParam;
 import com.freeLearn.wall.service.PostingService;
 import io.swagger.annotations.Api;
@@ -55,5 +56,14 @@ public class PostingController {
             return CommonResult.notFound("无可查看的帖子");
         }
         return CommonResult.success(CommonPage.restPage(postingBriefList), "帖子查询成功");
+    }
+
+    @ApiOperation("根据帖子id获取帖子内容")
+    @RequestMapping(value = "/pageNumListFloorsByPostingId", method = RequestMethod.GET)
+    CommonResult getPageNumListFloorsByPostingId(@RequestParam Integer postingId,
+                                      @RequestParam(defaultValue = "1") Integer pageNum,
+                                      @RequestParam(defaultValue = "10") Integer pageSize){
+        PostingDetails postingDetails = postingService.showPagedDetails(postingId, pageNum, pageSize);
+        return CommonResult.success(postingDetails, "帖子查询成功");
     }
 }
