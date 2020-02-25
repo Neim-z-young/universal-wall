@@ -1,7 +1,10 @@
 package com.freeLearn.wall.service.impl;
 
 import com.freeLearn.wall.common.CommonResult;
+import com.freeLearn.wall.dao.FloorBriefDao;
+import com.freeLearn.wall.dao.FloorDetailsDao;
 import com.freeLearn.wall.dao.PostingBriefDao;
+import com.freeLearn.wall.domain.FloorBrief;
 import com.freeLearn.wall.domain.PostingBrief;
 import com.freeLearn.wall.domain.PostingDetails;
 import com.freeLearn.wall.dto.PostingParam;
@@ -26,6 +29,9 @@ public class PostingServiceImpl implements PostingService {
 
     @Autowired
     private PostingBriefDao postingBriefDao;
+
+    @Autowired
+    private FloorBriefDao floorBriefDao;
 
     @Autowired
     private DateUtil dateUtil;
@@ -140,5 +146,31 @@ public class PostingServiceImpl implements PostingService {
             return CommonResult.success(null, "删除成功");
         }
         return CommonResult.failed("删除失败");
+    }
+
+    @Override
+    public PostingDetails showAllDetails(Integer postingId) {
+
+        PostingDetails details = new PostingDetails();
+        //为了方便PageHelper分页，故先查询评论列表
+        details.setFloorListBrief(floorBriefDao.selectByPostingId(postingId));
+        Posting posting = postingMapper.selectByPrimaryKey(postingId);
+        if(posting==null){
+            return null;
+        }
+        details.setId(posting.getId());
+        details.setTheme(posting.getTheme());
+        details.setDetailedIntroduction(posting.getDetailedIntroduction());
+        details.setPictureIntroduction(posting.getPictureIntroduction());
+        details.setReleaseTime(posting.getReleaseTime());
+        details.setPosterId(posting.getPosterId());
+        details.setCategoryId(posting.getCategoryId());
+        return details;
+    }
+
+    @Override
+    public PostingDetails showPagedDetails(Integer postingId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        return showAllDetails(postingId);
     }
 }

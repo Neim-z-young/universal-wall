@@ -3,6 +3,7 @@ package com.freeLearn.wall.dao;
 import com.freeLearn.wall.config.MybatisConfig;
 import com.freeLearn.wall.domain.FloorDetails;
 import com.freeLearn.wall.domain.InsideFloorDetails;
+import com.github.pagehelper.PageHelper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +30,7 @@ public class FloorDetailsDaoTest {
         System.out.println(details);
 
         FloorDetailsDao dao = session.getMapper(FloorDetailsDao.class);
+        PageHelper.startPage(1,2);
         FloorDetails details1 = dao.selectByPrimaryKey(1);
         System.out.println(details1);
         session.close();

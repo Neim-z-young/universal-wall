@@ -3,22 +3,24 @@ package com.freeLearn.wall.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 
 /**
- * 评论细节
- * 包含楼中楼
+ * 评论内容
+ * 不包含楼中楼
+ * 通过replyCount计数回复的个数
  */
-@Setter
 @Getter
-public class FloorDetails {
+@Setter
+public class FloorBrief {
     private Integer id;
     private Integer themeId;
     private Integer replyTime;
     private String comment;
     private Integer userId;
-    private List<InsideFloorDetails> insideFloorDetailList;
+    //TODO add to db table
+    private Integer replyCount;
     private static final long serialVersionUID = 1L;
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -30,10 +32,8 @@ public class FloorDetails {
         sb.append(", replyTime=").append(replyTime);
         sb.append(", comment=").append(comment);
         sb.append(", userId=").append(userId);
-        sb.append(", insideFloors=[");
-        for (InsideFloorDetails details:insideFloorDetailList)
-            sb.append(details);
-        sb.append("], serialVersionUID=").append(serialVersionUID);
+        sb.append(", replyCount=").append(replyCount);
+        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

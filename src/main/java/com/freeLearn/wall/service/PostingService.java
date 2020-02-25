@@ -125,4 +125,20 @@ public interface PostingService {
      */
     CommonResult deletePosting(Integer postingId);
 
+    /**
+     * 展示帖子内容
+     * @param postingId
+     * @return
+     */
+    PostingDetails showAllDetails(Integer postingId);
+
+    /**
+     * 分页展示帖子内评论
+     * @param postingId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    PostingDetails showPagedDetails(Integer postingId, Integer pageNum, Integer pageSize);
+
 }
