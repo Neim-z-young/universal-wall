@@ -66,14 +66,14 @@ public class FloorController {
         if(floor==null){
             return CommonResult.failed("评论不存在");
         }
-        if(floor.getId().equals(user.getId())){
+        if(floor.getUserId().equals(user.getId())){
             return floorService.deleteById(floorId);
         }
         return CommonResult.unauthorized("不是评论发起者");
     }
 
     @ApiOperation("按页显示评论回复")
-    @RequestMapping(value = "/pageNumListInsideFloorsByFloorId", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/pageNumListInsideFloorsByFloorId", method = RequestMethod.GET)
     CommonResult getPageNumListInsideFloorsByFloorId(@RequestParam Integer floorId,
                                                      @RequestParam(defaultValue = "1") Integer pageNum,
                                                      @RequestParam(defaultValue = "10") Integer pageSize){

@@ -15,10 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -47,7 +44,7 @@ public class InsideFloorController {
 
     @ApiOperation("添加回复")
     @RequestMapping(value = "/addReply", method = RequestMethod.POST)
-    CommonResult addReply(@Valid @RequestParam InsideFloorParam insideFloorParam, BindingResult bindingResult){
+    CommonResult addReply(@Valid @RequestBody InsideFloorParam insideFloorParam, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             LOGGER.debug("参数验证错误：" + bindingResult);
         }
@@ -69,7 +66,7 @@ public class InsideFloorController {
         if(insideFloor==null){
             return CommonResult.failed("回复不存在");
         }
-        if(user.getId().equals(insideFloor.getId())){
+        if(user.getId().equals(insideFloor.getUserId())){
             return insideFloorService.deleteById(insideFloorId);
         }
         return CommonResult.unauthorized("不是回复发起者");

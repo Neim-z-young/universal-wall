@@ -12,10 +12,12 @@ import com.freeLearn.wall.service.InsideFloorService;
 import com.freeLearn.wall.util.DateUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class InsideFloorServiceImpl implements InsideFloorService {
     @Autowired
     private FloorMapper floorMapper;
