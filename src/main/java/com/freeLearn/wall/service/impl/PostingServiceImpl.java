@@ -9,8 +9,11 @@ import com.freeLearn.wall.domain.PostingBrief;
 import com.freeLearn.wall.domain.PostingDetails;
 import com.freeLearn.wall.dto.PostingParam;
 import com.freeLearn.wall.mapper.PostingMapper;
+import com.freeLearn.wall.mapper.PostingStatisticMapper;
 import com.freeLearn.wall.model.Posting;
+import com.freeLearn.wall.model.PostingStatistic;
 import com.freeLearn.wall.service.PostingService;
+import com.freeLearn.wall.service.PostingStatisticService;
 import com.freeLearn.wall.util.DateUtil;
 import com.freeLearn.wall.util.StringUtil;
 import com.github.pagehelper.PageHelper;
@@ -26,6 +29,9 @@ import java.util.List;
 public class PostingServiceImpl implements PostingService {
     @Autowired
     private PostingMapper postingMapper;
+
+    @Autowired
+    private PostingStatisticService postingStatisticService;
 
     @Autowired
     private PostingBriefDao postingBriefDao;
@@ -114,8 +120,10 @@ public class PostingServiceImpl implements PostingService {
         posting.setPosterId(posterId);
         posting.setBriefIntroduction(stringUtil.cutStringHead(posting.getDetailedIntroduction(), 20));
         posting.setReleaseTime(dateUtil.getEpochFromDate(new Date()));
-        int res = postingMapper.insert(posting);
+        int res = postingMapper.insertSelective(posting);
         if(res>0){
+            //插入帖子统计信息
+            postingStatisticService.addDefault(posting);
             return CommonResult.success(null, "发帖成功");
         }
         return CommonResult.failed("发帖失败");
@@ -165,6 +173,7 @@ public class PostingServiceImpl implements PostingService {
         details.setReleaseTime(posting.getReleaseTime());
         details.setPosterId(posting.getPosterId());
         details.setCategoryId(posting.getCategoryId());
+        postingStatisticService.updateClickStatics(postingId);
         return details;
     }
 

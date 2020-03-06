@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.freeLearn.wall.dao.PostingStatisticDao">
+
+<update id="addClickTimes" parameterType="java.lang.Integer">
+  update posting_statistic
+  set click_times = click_times + 1
+  where theme_id = #{postingId}
+</update>
+
+</mapper>

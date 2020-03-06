@@ -1,5 +1,6 @@
 package com.freeLearn.wall.service;
 
+import com.freeLearn.wall.domain.WallUserDetailedInformation;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,4 +9,5 @@ import org.springframework.stereotype.Service;
  */
 
 public interface WallUserInformationService {
+    WallUserDetailedInformation getDetailedById(Integer userId);
 }

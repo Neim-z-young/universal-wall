@@ -1,9 +1,14 @@
 package com.freeLearn.wall.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 前端显示的用户信息
  * Create by oyoungy on 2019/10/29
  */
+@Getter
+@Setter
 public class WallUserDetailedInformation {
 
     // 用户唯一名称
@@ -27,4 +32,25 @@ public class WallUserDetailedInformation {
 
     // 是否实名
     private Boolean isRealNameRegistered;
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", username=").append(username);
+        sb.append(", nickName=").append(nickName);
+        sb.append(", gender=").append(gender);
+        sb.append(", growth=").append(growth);
+        sb.append(", points=").append(points);
+        sb.append(", university=").append(university);
+        sb.append(", schoolNumber=").append(schoolNumber);
+        sb.append(", isRealNameRegistered=").append(isRealNameRegistered);
+        sb.append("], serialVersionUID=").append(serialVersionUID);
+        sb.append("]");
+        return sb.toString();
+    }
 }
